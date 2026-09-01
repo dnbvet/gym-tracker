@@ -1,0 +1,1888 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#111827" />
+<title>Darren's Gym Tracker</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--ink:#111827;--muted:#6b7280;--soft:#e5e7eb;--accent:#111827;--good:#166534;--goodbg:#dcfce7;--warn:#92400e;--warnbg:#fef3c7}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}.app{max-width:760px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 14px calc(90px + env(safe-area-inset-bottom))}.topbar{position:sticky;top:0;z-index:20;background:rgba(243,244,246,.92);backdrop-filter:blur(16px);padding:14px 0 10px}.title{display:flex;align-items:center;justify-content:space-between;gap:10px}.title h1{font-size:23px;margin:0;letter-spacing:-.02em}.date{color:var(--muted);font-size:13px;margin-top:3px}.progressbar{height:8px;background:#e5e7eb;border-radius:999px;margin-top:12px;overflow:hidden}.progressbar>div{height:100%;background:var(--accent);width:0%;transition:.2s}.summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chip{background:#fff;border:1px solid var(--soft);padding:7px 10px;border-radius:999px;font-size:13px;color:#374151}.chip.good{background:var(--goodbg);color:var(--good);border-color:#bbf7d0}.section-title{display:flex;align-items:end;justify-content:space-between;margin:20px 2px 10px}.section-title h2{font-size:16px;margin:0}.section-title span{font-size:12px;color:var(--muted)}
+.card{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--soft);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:.2s}.card.done{opacity:.5}.card.done .ex-name{text-decoration:line-through}.icon{width:76px;height:76px;border-radius:15px;background:linear-gradient(145deg,#f9fafb,#e5e7eb);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e5e7eb}.icon svg{width:66px;height:66px}.icon img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}.ex-name{font-weight:760;font-size:16px;line-height:1.15}.sub{margin-top:5px;color:#374151;font-weight:650}.last{margin-top:4px;color:var(--muted);font-size:12px}.actions{display:flex;flex-direction:column;gap:7px}.donebtn{border:0;border-radius:13px;padding:12px 10px;min-width:70px;font-weight:750;background:#111827;color:#fff}.donebtn.done{background:#d1fae5;color:#166534}.editbtn{border:1px solid #d1d5db;border-radius:11px;padding:8px 10px;background:#fff;color:#374151;font-size:12px}.special{grid-template-columns:76px 1fr auto}.special .sub{font-weight:700}.startbox{background:#111827;color:#fff;border-radius:20px;padding:16px;margin:8px 0 14px}.startbox h3{margin:0 0 5px}.startbox p{margin:0;color:#d1d5db;font-size:13px}.primary{border:0;background:#fff;color:#111827;padding:11px 14px;border-radius:12px;font-weight:800;margin-top:12px}.endbtn{width:100%;border:0;background:#111827;color:#fff;border-radius:15px;padding:15px;font-weight:800;margin-top:14px}.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:30;width:min(1040px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid #e5e7eb;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}.tab{border:0;background:transparent;padding:10px;border-radius:12px;color:#6b7280;font-weight:700}.tab.active{background:#111827;color:#fff}.view{display:none}.view.active{display:block}.empty{background:#fff;border:1px dashed #d1d5db;border-radius:16px;padding:20px;text-align:center;color:#6b7280}.visit{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:14px;margin-bottom:10px}.visit-head{display:flex;justify-content:space-between;gap:10px;font-weight:800}.visit small{color:#6b7280}.visit-items{margin-top:8px;color:#374151;font-size:13px;line-height:1.5}.progress-card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px}.progress-card select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:12px;background:#fff;font-weight:700}.canvas-wrap{margin-top:12px;height:210px}.canvas-wrap canvas{width:100%;height:100%}.history-row{display:flex;justify-content:space-between;border-top:1px solid #f0f0f0;padding:9px 0;font-size:13px}.history-row:first-child{border-top:0}.muted{color:#6b7280}.modal-backdrop{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:flex-end;justify-content:center;z-index:100}.modal-backdrop.show{display:flex}.modal{background:#fff;width:min(1040px,100%);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.2)}.modal h3{margin:0 0 14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.field label{display:block;font-size:12px;color:#6b7280;margin-bottom:4px}.field input{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:11px}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.modal-actions button{padding:12px;border-radius:12px;font-weight:800}.cancel{background:#fff;border:1px solid #d1d5db}.save{background:#111827;color:#fff;border:0}.note{font-size:12px;color:#6b7280;margin-top:12px}.badge{font-size:11px;background:#f3f4f6;border-radius:999px;padding:4px 7px;color:#4b5563;margin-left:6px}
+@media(max-width:520px){.app{padding-left:10px;padding-right:10px}.card{grid-template-columns:64px 1fr auto;gap:9px;padding:10px}.icon{width:64px;height:64px}.icon svg{width:56px;height:56px}.ex-name{font-size:15px}.donebtn{min-width:62px;padding:11px 8px}.grid3{grid-template-columns:1fr 1fr}.grid3 .field:last-child{grid-column:1/-1}}
+.managebar{display:flex;justify-content:space-between;align-items:center;margin:4px 0 14px}.addbtn{border:0;background:#111827;color:white;padding:11px 14px;border-radius:12px;font-weight:800}.manage-card{display:grid;grid-template-columns:58px 1fr auto;gap:11px;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:10px;margin-bottom:9px}.manage-card .icon{width:58px;height:58px;border-radius:12px}.manage-card .icon svg{width:50px;height:50px}.smallbtn{border:1px solid #d1d5db;background:#fff;border-radius:10px;padding:8px 9px;font-weight:700}.danger{color:#991b1b}.library{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}.picchoice{border:2px solid transparent;background:#fff;border-radius:13px;padding:5px;text-align:center}.picchoice.selected{border-color:#111827}.picchoice img,.picchoice .libsvg{width:100%;aspect-ratio:1.15;object-fit:contain;border-radius:9px;background:#f3f4f6}.picchoice span{display:block;font-size:10px;margin-top:4px;color:#4b5563}.seg{display:flex;gap:6px;margin-bottom:12px}.seg button{flex:1;border:1px solid #d1d5db;background:#fff;padding:9px;border-radius:10px;font-weight:700}.seg button.active{background:#111827;color:#fff}.widefield{margin-top:10px}.widefield input,.widefield select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:11px;background:#fff}@media(max-width:520px){.library{grid-template-columns:repeat(2,1fr)}}
+
+.sidebar{display:none}
+@media(min-width:760px){
+ body{padding-left:200px}
+ .app{max-width:1040px;padding-left:28px;padding-right:28px}
+ .sidebar{display:flex;position:fixed;left:0;top:0;bottom:0;width:200px;background:linear-gradient(180deg,#071d33 0%,#0b2744 100%);color:#fff;z-index:50;flex-direction:column;padding:26px 16px 20px;box-shadow:2px 0 14px rgba(0,0,0,.08)}
+ .brand{font-size:20px;font-weight:850;line-height:1.15;margin:4px 8px 28px}
+ .brand small{display:block;font-size:12px;font-weight:600;color:#aab5c5;margin-top:5px}
+ .side-nav{display:flex;flex-direction:column;gap:7px}
+ .navbtn{border:0;background:transparent;color:#cbd5e1;text-align:left;padding:12px 13px;border-radius:11px;font-weight:750;cursor:pointer}
+ .navbtn.active{background:#2563eb;color:#fff}
+ .sidebar-foot{margin-top:auto;color:#94a3b8;font-size:11px;line-height:1.45;padding:0 8px}
+ .tabs{display:none}
+}
+
+@media(min-width:760px){
+ .topbar{padding-top:18px}.title h1{font-size:28px}.date{font-size:15px}
+ .card{grid-template-columns:88px 1fr auto;padding:10px 14px;border-radius:15px;margin-bottom:8px;min-height:104px}
+ .icon{width:88px;height:82px;border-radius:12px;background:#fff}
+ .ex-name{font-size:17px}.sub{font-size:16px}.last{font-size:13px}
+ .section-title{margin-top:18px;margin-bottom:8px}.section-title h2{font-size:18px}
+ .startbox{border-radius:16px;padding:18px 20px}.startbox h3{font-size:21px}
+ .sidebar .brand{font-size:22px}.navbtn{font-size:15px}
+}
+
+.libtools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.libtools input{flex:1;min-width:220px;padding:12px 14px;border:1px solid #d1d5db;border-radius:12px;background:#fff}.libcats{display:flex;gap:6px;flex-wrap:wrap}.libcat{border:1px solid #d1d5db;background:#fff;border-radius:999px;padding:9px 12px;font-weight:700;color:#475569}.libcat.active{background:#111827;color:#fff}.library-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.libcard{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:10px;cursor:pointer}.libcard:hover{box-shadow:0 4px 18px rgba(0,0,0,.08)}.libcard img{width:100%;aspect-ratio:1.35;object-fit:contain;background:#fff;border-radius:10px}.libcard .lname{font-weight:800;margin-top:7px}.libcard .lcat{font-size:12px;color:#64748b;margin-top:3px}.libcard .use{margin-top:8px;width:100%;border:0;background:#111827;color:#fff;border-radius:10px;padding:8px;font-weight:750}@media(max-width:900px){.library-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.library-grid{grid-template-columns:repeat(2,1fr);gap:8px}.libcard{padding:7px}.libcard .lname{font-size:13px}}
+</style>
+
+<style id="v34-approved-artwork">
+.exercise-thumb img,.exercise-image img,.thumb img,.artwork img,.exercise-card img{
+  width:100%;height:100%;object-fit:contain!important;object-position:center!important;
+  background:#fff;border-radius:inherit;display:block;
+}
+.exercise-thumb,.exercise-image,.thumb,.artwork{
+  background:#fff!important;background-image:none!important;overflow:hidden!important;
+}
+</style>
+
+<style id="v35-fixes">
+.card.justdone{
+  opacity:1!important;
+  background:#ecfdf5!important;
+  border-color:#86efac!important;
+  box-shadow:0 0 0 2px rgba(34,197,94,.08);
+}
+.card.justdone .donebtn{
+  background:#16a34a!important;
+  color:#fff!important;
+}
+.card.justdone .ex-name{text-decoration:none!important}
+.donebtn:disabled{cursor:default}
+.modal{
+  max-height:min(90vh,820px)!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+}
+#manageModal.show{align-items:center}
+#manageModal .modal{border-radius:22px!important}
+#library{
+  max-width:1040px;
+  margin:0 auto;
+  min-height:100vh;
+  padding:14px 28px 100px;
+}
+.progress-label{
+  font-size:12px;color:#64748b;font-weight:750;margin:10px 2px -4px
+}
+.resetbox{
+  margin-top:22px;padding:14px;background:#fff;border:1px solid #e5e7eb;
+  border-radius:15px;color:#64748b;font-size:12px
+}
+.resetbtn{
+  margin-top:10px;border:1px solid #fecaca;background:#fff;color:#991b1b;
+  border-radius:10px;padding:9px 11px;font-weight:750
+}
+
+
+.progress-xaxis{display:flex;justify-content:space-between;gap:8px;margin:2px 8px 0 42px;color:#64748b;font-size:11px}
+.progress-xaxis span{white-space:nowrap}
+
+.smallbtn.confirming{background:#16a34a!important;color:white!important;border-color:#16a34a!important}
+</style>
+
+
+
+<style id="v316-final-polish">
+:root{ --final-workspace:#dfe8f2; }
+
+/* Continuous page/workspace background on every screen */
+body,
+.app,
+main,
+.view,
+#workoutView,
+#visitsView,
+#progressView,
+#manageView,
+#libraryView{
+  background:var(--final-workspace)!important;
+}
+
+/* Remove any section/band backgrounds around page headings and counters */
+main > header,
+.view > header,
+.page-header,
+.topbar,
+.summary,
+.stats,
+.progress-summary{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Functional content surfaces stay white */
+.card,
+.visit,
+.manage-card,
+.libcard,
+.panel,
+.canvas-wrap,
+.startbox{
+  background:#fff!important;
+}
+
+/* Restore the start-visit card as a coherent dark feature panel */
+.startbox{
+  background:#0f1a2d!important;
+  color:#fff!important;
+}
+.startbox h2,
+.startbox h3,
+.startbox p{
+  color:#fff!important;
+}
+</style>
+
+
+<style id="v319-visits-polish">
+#visits{
+  max-width:900px;
+  margin:0 auto;
+}
+#visits .topbar{
+  background:transparent!important;
+  padding-bottom:8px!important;
+}
+#visitsList .empty{
+  min-height:150px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  background:#fff!important;
+  border:1px solid rgba(15,26,45,.10)!important;
+  border-radius:18px!important;
+  box-shadow:0 2px 8px rgba(15,26,45,.05)!important;
+  padding:24px!important;
+  color:#667085!important;
+}
+#visitsList .empty::before{
+  content:"▦";
+  display:block;
+  font-size:30px;
+  line-height:1;
+  color:#49627d;
+  margin-bottom:10px;
+}
+#visitsList .empty::after{
+  content:"Your completed gym sessions will appear here.";
+  display:block;
+  margin-top:7px;
+  font-size:14px;
+  color:#7b8794;
+}
+#visits .resetbox{
+  margin-top:22px!important;
+  background:rgba(255,255,255,.64)!important;
+  border:1px solid rgba(15,26,45,.08)!important;
+  box-shadow:none!important;
+  padding:13px 16px!important;
+  border-radius:16px!important;
+}
+#visits .resetbox strong{
+  color:#475467!important;
+}
+#visitsList .visit{
+  padding:16px 18px!important;
+  border-radius:16px!important;
+  box-shadow:0 2px 8px rgba(15,26,45,.06)!important;
+}
+#visitsList .visit-head small{
+  background:#eef3f8;
+  border-radius:999px;
+  padding:5px 9px;
+  font-weight:700;
+}
+#visitsList .visit-items{
+  line-height:1.35!important;
+}
+</style>
+
+
+<style id="v321-progress-polish">
+#progress{
+  max-width:900px;
+  margin:0 auto;
+}
+#progress .topbar{
+  background:transparent!important;
+  padding-bottom:8px!important;
+}
+#progress .panel{
+  border-radius:18px!important;
+  box-shadow:0 2px 8px rgba(15,26,45,.06)!important;
+  border:1px solid rgba(15,26,45,.08)!important;
+  padding:18px 20px!important;
+}
+#progress #exerciseSelect{
+  border-radius:10px!important;
+  padding:10px 12px!important;
+  font-weight:700!important;
+  border:1px solid #cfd8e3!important;
+  background:#fff!important;
+}
+#progress .progress-label{
+  margin-top:12px!important;
+  margin-bottom:6px!important;
+  color:#475467!important;
+  font-size:13px!important;
+}
+#progress .canvas-wrap{
+  border-radius:14px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(15,26,45,.06)!important;
+  background:#fff!important;
+}
+#progress .history-row{
+  padding:10px 0!important;
+  border-top:1px solid #edf1f5!important;
+}
+#progress .history-row:first-child{
+  border-top:none!important;
+}
+#progress .history-row span{color:#667085!important}
+#progress .history-row strong{color:#111827!important}
+</style>
+
+
+<style id="v322-exercises-polish">
+#manage{
+  max-width:900px;
+  margin:0 auto;
+}
+#manage .topbar{
+  background:transparent!important;
+  padding-bottom:8px!important;
+}
+#manage .managebar{
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(15,26,45,.08);
+  border-radius:16px;
+  padding:8px;
+  margin:4px 0 14px!important;
+}
+#manage .seg{
+  gap:5px!important;
+}
+#manage .seg button{
+  border:0!important;
+  background:transparent!important;
+  color:#667085!important;
+  border-radius:10px!important;
+  padding:10px 14px!important;
+}
+#manage .seg button.active{
+  background:#fff!important;
+  color:#111827!important;
+  box-shadow:0 1px 4px rgba(15,26,45,.10)!important;
+}
+#manage .addbtn{
+  border-radius:11px!important;
+  padding:10px 16px!important;
+  min-width:88px;
+}
+#manage .manage-card{
+  grid-template-columns:64px 1fr auto!important;
+  gap:13px!important;
+  padding:11px 13px!important;
+  margin-bottom:8px!important;
+  border-radius:15px!important;
+  border:1px solid rgba(15,26,45,.08)!important;
+  box-shadow:0 1px 3px rgba(15,26,45,.04)!important;
+}
+#manage .manage-card .icon{
+  width:64px!important;
+  height:64px!important;
+  border-radius:12px!important;
+}
+#manage .manage-card .ex-name{
+  font-size:16px!important;
+}
+#manage .manage-card .last{
+  font-size:12px!important;
+  color:#667085!important;
+}
+#manage .smallbtn{
+  border-radius:10px!important;
+  min-width:82px;
+}
+#manage .smallbtn.danger{
+  background:#fff7f7!important;
+  border-color:#fecaca!important;
+}
+#manage .empty{
+  min-height:140px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff!important;
+  border:1px solid rgba(15,26,45,.08)!important;
+  border-radius:16px!important;
+}
+</style>
+
+
+<style id="v323-library-polish">
+/* Library polish: compact browse-first layout, aligned with approved Exercises page */
+#library .topbar{margin-bottom:12px}
+#library .topbar .title{align-items:flex-start;gap:16px}
+#library .topbar .addbtn{white-space:nowrap;margin-top:2px}
+#library .libtools{background:rgba(255,255,255,.72);border:1px solid rgba(203,213,225,.85);border-radius:16px;padding:10px 12px;gap:9px}
+#library .libtools input{min-width:260px;padding:10px 13px;border-radius:11px}
+#library .libcats{gap:5px}
+#library .libcat{padding:8px 11px;font-size:13px}
+#libraryCount{font-size:13px!important;margin:9px 2px!important}
+#library .library-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#library .libcard{border-color:#dbe3ec;border-radius:15px;padding:9px;box-shadow:0 1px 2px rgba(15,23,42,.035);cursor:default}
+#library .libcard:hover{box-shadow:0 4px 14px rgba(15,23,42,.07);transform:translateY(-1px)}
+#library .libcard img{aspect-ratio:1.5;object-fit:contain;border:1px solid #edf1f5;border-radius:10px}
+#library .libcard .lname{font-size:15px;line-height:1.2;margin-top:8px}
+#library .libcard .lcat{font-size:11px;margin-top:2px;text-transform:capitalize}
+#library .libcard .use{margin-top:8px;padding:9px 8px;border-radius:10px;font-size:13px}
+#library .libcard .use:disabled{background:#eef2f7!important;color:#64748b!important;opacity:1!important;border:1px solid #dbe3ec}
+@media(max-width:900px){#library .library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gym Tracker">
+<meta name="theme-color" content="#0b2744">
+
+
+<style id="v43-cloud-auth">
+#cloud{max-width:900px;margin:0 auto}
+.cloud-card{
+  max-width:560px;background:#fff;border:1px solid rgba(15,26,45,.09);
+  border-radius:18px;padding:20px;box-shadow:0 2px 8px rgba(15,26,45,.05)
+}
+.cloud-project{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  padding:11px 12px;background:#f3f7fb;border:1px solid #dbe5ef;border-radius:11px;margin-bottom:14px
+}
+.cloud-project span{font-size:12px;color:#667085}
+.cloud-field{margin:10px 0}
+.cloud-field label{display:block;font-size:12px;font-weight:700;color:#667085;margin-bottom:4px}
+.cloud-field input{width:100%;padding:11px 12px;border:1px solid #cfd8e3;border-radius:11px;background:#fff}
+.cloud-message{min-height:18px;font-size:12px;color:#667085;margin-top:10px}
+.cloud-message.error{color:#991b1b}.cloud-message.good{color:#166534}
+.cloud-user{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px;background:#f6f8fb;border-radius:12px
+}
+.cloud-ok{color:#166534;font-size:13px;font-weight:700;margin-top:3px}
+.cloud-note{font-size:12px;color:#667085;margin-top:12px;line-height:1.45}
+.mobile-cloud-button{display:none}
+@media(max-width:759px){
+  .mobile-cloud-button{
+    display:block;position:fixed;right:12px;top:calc(10px + env(safe-area-inset-top));
+    z-index:70;width:42px;height:42px;border:1px solid #dbe3ec;border-radius:14px;
+    background:rgba(255,255,255,.96);box-shadow:0 3px 12px rgba(15,26,45,.12);font-size:19px
+  }
+}
+</style>
+
+
+<style id="v44-backup">
+.cloud-backup-panel{
+  margin-top:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:13px 14px;
+  border:1px solid #dbe5ef;
+  background:#f8fafc;
+  border-radius:12px;
+}
+.cloud-backup-panel strong{display:block;color:#111827;margin-bottom:3px}
+#cloudBackupStatus{font-size:12px;color:#667085}
+@media(max-width:620px){
+  .cloud-backup-panel{align-items:stretch;flex-direction:column}
+  .cloud-backup-panel button{width:100%}
+}
+</style>
+
+
+<style id="v45-cloud-check">
+.cloud-check-panel{
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:13px 14px;
+  border:1px solid #dbe5ef;
+  background:#ffffff;
+  border-radius:12px;
+}
+.cloud-check-panel strong{display:block;color:#111827;margin-bottom:3px}
+#cloudCheckStatus{font-size:12px;color:#667085}
+@media(max-width:620px){
+  .cloud-check-panel{align-items:stretch;flex-direction:column}
+  .cloud-check-panel button{width:100%}
+}
+</style>
+
+
+<style id="v47-restore">
+.cloud-restore-panel,.cloud-rollback-panel{
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:13px 14px;
+  border:1px solid #dbe5ef;
+  border-radius:12px;
+}
+.cloud-restore-panel{background:#fffaf2;border-color:#f1dfbd}
+.cloud-rollback-panel{background:#f7fbf8;border-color:#cfe5d4}
+.cloud-restore-panel strong,.cloud-rollback-panel strong{display:block;color:#111827;margin-bottom:3px}
+#cloudRestoreStatus,#cloudRollbackStatus{font-size:12px;color:#667085}
+@media(max-width:620px){
+  .cloud-restore-panel,.cloud-rollback-panel{align-items:stretch;flex-direction:column}
+  .cloud-restore-panel button,.cloud-rollback-panel button{width:100%}
+}
+</style>
+
+
+<style id="v48-syncstatus">
+.cloud-sync-panel{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 14px;border:1px solid #dbe5ef;background:#f6f8fb;border-radius:12px}
+.cloud-sync-panel strong{display:block;color:#111827;margin-bottom:3px}
+#cloudSyncStatus{font-size:12px;color:#667085}
+@media(max-width:620px){.cloud-sync-panel{align-items:stretch;flex-direction:column}.cloud-sync-panel button{width:100%}}
+</style>
+
+
+<style id="v49-syncactions">
+.cloud-sync-action-panel{
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:13px 14px;
+  border:1px solid #cfe0f3;
+  background:#f5f9fd;
+  border-radius:12px;
+}
+.cloud-sync-action-panel strong{display:block;color:#111827;margin-bottom:3px}
+#cloudSyncActionText{font-size:12px;color:#667085}
+@media(max-width:620px){
+  .cloud-sync-action-panel{align-items:stretch;flex-direction:column}
+  .cloud-sync-action-panel button{width:100%}
+}
+</style>
+
+
+
+<style id="v51-startup-sync">
+.startup-sync-banner{
+  position:fixed;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:120;
+  width:min(680px,calc(100% - 28px));
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:11px 13px;
+  border:1px solid #cfe0f3;
+  background:rgba(255,255,255,.97);
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(15,26,45,.14);
+}
+.startup-sync-banner strong{display:block;color:#111827;font-size:13px}
+.startup-sync-banner span{display:block;color:#667085;font-size:12px;margin-top:2px}
+.startup-sync-banner .smallbtn{white-space:nowrap}
+@media(max-width:620px){
+  .startup-sync-banner{top:calc(10px + env(safe-area-inset-top));align-items:stretch}
+}
+</style>
+
+
+
+<style id="v54-clean-sync">
+.startup-sync-actions{display:flex;gap:8px;align-items:center}
+@media(max-width:620px){.startup-sync-actions{flex-direction:column;align-items:stretch}}
+</style>
+
+
+<style id="v55-session-refresh">
+.cloud-session-note{
+  margin-bottom:12px;padding:10px 12px;border-radius:10px;
+  background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:12px
+}
+</style>
+
+
+<style id="v56-fast-compare">
+.cloud-cache-note{font-size:11px;color:#98a2b3;margin-top:4px}
+</style>
+
+
+<style id="v57-everyday-sync">
+.cloud-everyday-card{
+  margin-top:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:14px;
+  border:1px solid #dbe5ef;
+  background:#f8fafc;
+  border-radius:12px;
+}
+.cloud-everyday-card strong{display:block;color:#111827;margin-bottom:3px}
+#cloudEverydayStatus{font-size:12px;color:#667085}
+.cloud-secondary-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.cloud-advanced{margin-top:14px;border-top:1px solid #edf1f5;padding-top:10px}
+.cloud-advanced summary{cursor:pointer;font-weight:700;color:#475467;font-size:13px}
+.cloud-advanced-body{padding-top:10px}
+@media(max-width:620px){
+  .cloud-everyday-card{align-items:stretch;flex-direction:column}
+  .cloud-everyday-card button,.cloud-secondary-actions button{width:100%}
+}
+</style>
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<style id="v59-pwa-ready">
+.pwa-ready-note{
+  margin-top:14px;padding:12px 13px;border-radius:12px;
+  border:1px solid #dbe5ef;background:#f8fafc
+}
+.pwa-ready-note strong{display:block;color:#111827;font-size:13px;margin-bottom:3px}
+.pwa-ready-note span{display:block;color:#667085;font-size:12px;line-height:1.45}
+</style>
+
+</head>
+<body>
+
+<div id="startupSyncBanner" class="startup-sync-banner" style="display:none">
+  <div>
+    <strong id="startupSyncTitle">Sync status</strong>
+    <span id="startupSyncText"></span>
+  </div>
+  <div class="startup-sync-actions"><button id="startupSyncDismiss" class="smallbtn">Later</button><button id="startupSyncButton" class="smallbtn">Sync</button></div>
+</div>
+
+<aside class="sidebar">
+  <div class="brand">Darren's<br>Gym Tracker<small>Workout & progression</small></div>
+  <nav class="side-nav">
+    <button class="navbtn active" data-view="workout">▣&nbsp;&nbsp;Today</button>
+    <button class="navbtn" data-view="visits">▦&nbsp;&nbsp;Visits</button>
+    <button class="navbtn" data-view="progress">⌁&nbsp;&nbsp;Progress</button>
+    <button class="navbtn" data-view="manage">⚙&nbsp;&nbsp;Exercises</button>
+    <button class="navbtn" data-view="library">▤&nbsp;&nbsp;Library</button>
+<button class="navbtn" data-view="cloud">☁&nbsp;&nbsp;Cloud</button>
+  </nav>
+  <div class="sidebar-foot">All data stored locally on this device.<br><br>v5.9-pwa-ready</div>
+</aside>
+<div class="app">
+  <div id="workout" class="view active">
+    <div class="topbar">
+      <div class="title"><div><h1>Gym Tracker</h1><div id="today" class="date"></div></div><div id="sessionBadge" class="chip">No active visit</div></div>
+      <div class="progressbar"><div id="bar"></div></div>
+      <div class="summary"><div id="sumDone" class="chip good">0 completed</div><div id="sumRemain" class="chip">15 remaining</div></div>
+    </div>
+    <div id="startBox" class="startbox"><h3>Ready to train?</h3><p>Start a visit to track attendance and today’s exercise progression.</p><button id="startBtn" class="primary">Start gym visit</button></div>
+    <div class="section-title"><h2>Warm-up</h2><span>usual start</span></div>
+    <div id="warmup"></div>
+    <div class="section-title"><h2>Strength</h2><span>choose any available exercise</span></div>
+    <div id="strength"></div>
+    <div class="section-title"><h2>Finish</h2><span>usual finish</span></div>
+    <div id="finish"></div>
+    <button id="endBtn" class="endbtn" style="display:none">Finish & save visit</button>
+  </div>
+
+  <div id="visits" class="view">
+    <div class="topbar"><div class="title"><div><h1>Visits</h1><div class="date">Attendance history</div></div></div></div>
+    <div id="visitsList"></div>
+    <div class="resetbox">
+      <strong>Testing / reset</strong><br>
+      When testing is finished, this restores the original program values and clears test visits.
+      <br><button id="resetTestData" class="resetbtn">Reset test data & restore starting program</button>
+    </div>
+  </div>
+
+  <div id="progress" class="view">
+    <div class="topbar"><div class="title"><div><h1>Progress</h1><div class="date">Exercise progression</div></div></div></div>
+    <div class="progress-card">
+      <select id="exerciseSelect"></select>
+      <div class="progress-label">Weight progression</div>
+      <div class="canvas-wrap"><canvas id="chart" width="680" height="210"></canvas></div><div id="progressXAxis" style="display:none!important"></div>
+      <div class="progress-label">Session history</div><div id="exerciseHistory"></div>
+    </div>
+  </div>
+
+  <div id="manage" class="view">
+    <div class="topbar"><div class="title"><div><h1>Exercises</h1><div class="date">Manage your current program</div></div></div></div>
+    <div class="managebar"><div class="seg" style="flex:1;margin:0"><button id="activeSeg" class="active">Active</button><button id="retiredSeg">Retired</button></div><button id="addExercise" class="addbtn" style="margin-left:10px">+ Add</button></div>
+    <div id="manageList"></div>
+  </div>
+
+  <div id="library" class="view">
+    <div class="topbar"><div class="title"><div><h1>Exercise Library</h1><div class="date">Browse polished exercise artwork and add exercises to your workout.</div></div><button id="libAdd" class="addbtn">+ Add custom</button></div></div>
+    <div class="libtools"><input id="libSearch" placeholder="Search exercises…"><div class="libcats" id="libCats"></div></div>
+    <div id="libraryCount" class="date" style="margin:10px 2px"></div><div id="libraryGrid" class="library-grid"></div>
+  </div>
+
+  <div id="cloud" class="view">
+    <div class="topbar">
+      <div class="title">
+        <div>
+          <h1>Cloud</h1>
+          <div class="date">Sign in to connect this device to Gym Tracker cloud.</div>
+        </div>
+        <div id="cloudChip" class="chip">Not signed in</div>
+      </div>
+    </div>
+
+    <div class="cloud-card">
+      <div id="cloudSignedOut">
+        <div class="cloud-session-note">Sign in to connect or renew this device&apos;s cloud session.</div>
+        <div class="cloud-project">
+          <strong>Gym Tracker cloud project</strong>
+          <span>Supabase · Sydney</span>
+        </div>
+        <div class="cloud-field">
+          <label>Email</label>
+          <input id="cloudEmail" type="email" autocomplete="email">
+        </div>
+        <div class="cloud-field">
+          <label>Password</label>
+          <input id="cloudPassword" type="password" autocomplete="current-password">
+        </div>
+        <button id="cloudLogin" class="primary dark">Sign in</button>
+        <div id="cloudMessage" class="cloud-message"></div>
+      </div>
+
+      <div id="cloudSignedIn" style="display:none">
+        <div class="cloud-user">
+          <div>
+            <strong id="cloudUserEmail"></strong>
+            <div class="cloud-ok">Cloud connected</div>
+          </div>
+          <button id="cloudLogout" class="smallbtn">Sign out</button>
+        </div>
+        <div class="cloud-everyday-card">
+          <div>
+            <strong>Cloud status</strong>
+            <div id="cloudEverydayStatus">Checking…</div>
+          </div>
+          <button id="cloudCompareNow" class="smallbtn">Check now</button>
+        </div>
+        <div id="cloudSyncMessage" class="cloud-message"></div>
+        <div id="cloudSyncActionPanel" class="cloud-sync-action-panel" style="display:none">
+          <div>
+            <strong id="cloudSyncActionTitle">Recommended action</strong>
+            <div id="cloudSyncActionText"></div>
+          </div>
+          <button id="cloudSyncActionButton" class="primary dark">Apply recommended action</button>
+        </div>
+        <div class="cloud-secondary-actions">
+          <button id="cloudBackupNow" class="smallbtn">Back up now</button>
+          <button id="cloudRestoreNow" class="smallbtn">Restore from cloud</button>
+        </div>
+        <div id="cloudBackupMessage" class="cloud-message"></div>
+        
+
+        <details class="cloud-advanced">
+          <summary>Advanced / recovery</summary>
+          <div class="cloud-advanced-body">
+            <div class="cloud-rollback-panel" id="cloudRollbackPanel" style="display:none">
+              <div>
+                <strong>Rollback available</strong>
+                <div id="cloudRollbackStatus">A local pre-restore snapshot is available.</div>
+              </div>
+              <button id="cloudRollbackNow" class="smallbtn">Undo last restore</button>
+            </div>
+            <button id="cloudCheckNow" class="smallbtn">Validate cloud backup</button>
+            <div id="cloudCheckMessage" class="cloud-message"></div>
+          </div>
+        </details>
+
+        <div id="cloudRestoreMessage" class="cloud-message"></div>
+<div id="cloudSyncActionPanel" class="cloud-sync-action-panel" style="display:none">
+          <div>
+            <strong id="cloudSyncActionTitle">Recommended action</strong>
+            <div id="cloudSyncActionText"></div>
+          </div>
+          <button id="cloudSyncActionButton" class="primary dark">Apply recommended action</button>
+        </div>
+<p class="cloud-note">Gym Tracker checks whether this device or the cloud has newer content. Sync only happens when you approve it.</p>
+<div class="pwa-ready-note">
+          <strong>iPhone-ready web app</strong>
+          <span>Once this build is hosted on HTTPS, it can be added to the iPhone Home Screen and will keep the app shell/artwork available offline.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<button id="mobileCloudButton" class="mobile-cloud-button" aria-label="Cloud">☁</button>
+<div class="tabs">
+  <button class="tab active" data-view="workout">▣&nbsp;&nbsp;Today</button>
+  <button class="tab" data-view="visits">▦&nbsp;&nbsp;Visits</button>
+  <button class="tab" data-view="progress">⌁&nbsp;&nbsp;Progress</button>
+  <button class="tab" data-view="manage">⚙&nbsp;&nbsp;Exercises</button>
+</div>
+
+
+<div id="modalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <h3 id="modalTitle">Edit exercise</h3>
+    <div class="grid3">
+      <div class="field"><label>Weight (kg)</label><input id="weightInput" inputmode="decimal" /></div>
+      <div class="field"><label>Sets</label><input id="setsInput" inputmode="numeric" /></div>
+      <div class="field"><label>Reps</label><input id="repsInput" inputmode="numeric" /></div>
+    </div>
+    <div class="modal-actions"><button class="cancel" id="cancelEdit">Cancel</button><button class="save" id="saveEdit">Save change</button></div>
+    <div class="note">Changes become the new default for future visits and are recorded in progression history.</div>
+  </div>
+</div>
+
+<div id="manageModal" class="modal-backdrop"><div class="modal"><h3 id="manageTitle">Add exercise</h3>
+<div class="widefield"><label>Exercise name</label><input id="nameInput"></div>
+<div class="grid3" style="margin-top:10px"><div class="field"><label>Weight (kg)</label><input id="mWeight" inputmode="decimal"></div><div class="field"><label>Sets</label><input id="mSets" inputmode="numeric"></div><div class="field"><label>Reps</label><input id="mReps" inputmode="numeric"></div></div>
+<div class="widefield" id="pictureField"><label>Picture</label><div id="pictureLibrary" class="library"></div></div>
+<div class="modal-actions"><button class="cancel" id="cancelManage">Cancel</button><button class="save" id="saveManage">Save exercise</button></div></div></div>
+
+<script>
+const svg = (type)=>{
+ const common='fill="#111827"';
+ const skin='fill="#6b7280"';
+ const machine='fill="#9ca3af"';
+ const floor='<rect x="5" y="57" width="54" height="4" rx="2" fill="#d1d5db"/>';
+ const person=(x,y)=>`<circle cx="${x}" cy="${y}" r="5" ${skin}/>`;
+ const map={
+  foam:`${floor}<rect x="17" y="42" width="34" height="7" rx="3" ${machine}/><circle cx="27" cy="50" r="6" fill="#4b5563"/>${person(22,34)}<rect x="20" y="37" width="25" height="6" rx="3" ${common}/>` ,
+  legpress:`${floor}<path d="M44 14h8v38h-8z" ${machine}/><path d="M14 46h26v8H14z" ${machine}/><path d="M37 22l12 10-4 5-12-10z" fill="#6b7280"/>${person(25,28)}<path d="M23 33l11 8 4-5-10-8z" ${common}/><path d="M22 38l-6 10h7l6-8z" ${common}/>` ,
+  row:`${floor}${person(22,24)}<path d="M20 29l13 7-3 6-14-6z" ${common}/><path d="M30 36l18-4 2 5-18 5z" fill="#6b7280"/><circle cx="52" cy="35" r="5" fill="#374151"/><path d="M18 36l-5 14h7l5-12z" ${common}/>` ,
+  chest:`${floor}<path d="M13 16h7v38h-7zM45 16h7v38h-7z" ${machine}/><path d="M14 21h37v5H14z" ${machine}/>${person(30,32)}<rect x="23" y="37" width="14" height="16" rx="5" ${common}/><path d="M22 39L13 33l-3 4 11 8zM38 39l12-6 3 4-13 8z" fill="#6b7280"/>` ,
+  pulldown:`${floor}<path d="M10 12h6v43h-6zM49 12h6v43h-6zM12 12h41v5H12z" ${machine}/><rect x="17" y="20" width="31" height="4" rx="2" fill="#4b5563"/>${person(32,32)}<rect x="26" y="37" width="12" height="15" rx="4" ${common}/><path d="M27 36l-10-12 4-3 9 10zM37 36l10-12-4-3-9 10z" fill="#6b7280"/>` ,
+  cable:`${floor}<path d="M47 12h8v44h-8z" ${machine}/><circle cx="51" cy="21" r="4" fill="#4b5563"/>${person(24,26)}<rect x="19" y="31" width="11" height="18" rx="4" ${common}/><path d="M29 37l18-14 2 3-17 15z" fill="#6b7280"/><path d="M22 48l-7 9h7l5-8zM28 48l8 9h7l-11-12z" ${common}/>` ,
+  shrug:`${floor}${person(32,20)}<rect x="25" y="26" width="14" height="22" rx="5" ${common}/><path d="M25 29l-7 18h5l7-16zM39 29l7 18h5l-7-16z" fill="#6b7280"/><circle cx="18" cy="50" r="5" fill="#374151"/><circle cx="50" cy="50" r="5" fill="#374151"/>` ,
+  hipthrust:`${floor}<rect x="8" y="35" width="25" height="8" rx="3" ${machine}/>${person(29,30)}<path d="M27 34l14 5-2 6-14-5z" ${common}/><rect x="34" y="36" width="23" height="4" rx="2" fill="#374151"/><circle cx="34" cy="38" r="6" fill="#6b7280"/><circle cx="57" cy="38" r="6" fill="#6b7280"/><path d="M41 44l10 12h-7l-10-11z" ${common}/>` ,
+  kneeext:`${floor}<path d="M11 25h20v24H11z" ${machine}/><path d="M30 41h22v6H30z" ${machine}/>${person(27,22)}<rect x="21" y="27" width="11" height="17" rx="4" ${common}/><path d="M31 40l19 8-2 5-19-7z" fill="#6b7280"/><circle cx="50" cy="50" r="5" fill="#4b5563"/>` ,
+  legcurl:`${floor}<rect x="8" y="31" width="40" height="10" rx="3" ${machine}/>${person(16,25)}<rect x="16" y="26" width="30" height="8" rx="4" ${common}/><path d="M44 31l10 13-5 3-12-13z" fill="#6b7280"/><circle cx="54" cy="46" r="5" fill="#4b5563"/>` ,
+  hinge:`${floor}${person(25,20)}<path d="M23 25l17 12-4 6-18-12z" ${common}/><path d="M36 40l14 11h-8l-11-8zM22 32l-5 19h7l5-16z" ${common}/><rect x="12" y="39" width="41" height="4" rx="2" fill="#374151"/><circle cx="12" cy="41" r="6" fill="#6b7280"/><circle cx="53" cy="41" r="6" fill="#6b7280"/>` ,
+  seatedrow:`${floor}<path d="M9 22h7v33H9zM47 22h7v33h-7z" ${machine}/>${person(26,27)}<rect x="20" y="32" width="12" height="18" rx="4" ${common}/><path d="M31 36l17-6 2 4-17 7z" fill="#6b7280"/><path d="M22 49l-8 7h8l6-6z" ${common}/>` ,
+  bike:`${floor}<circle cx="19" cy="47" r="12" fill="none" stroke="#6b7280" stroke-width="4"/><circle cx="48" cy="47" r="12" fill="none" stroke="#6b7280" stroke-width="4"/><path d="M19 47l12-18 10 18H19zM31 29h10" fill="none" stroke="#111827" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${person(31,17)}<path d="M30 22l7 9-5 4-8-10z" ${common}/>` ,
+  cross:`${floor}<path d="M16 50c8-11 22-11 31 0" fill="none" stroke="#6b7280" stroke-width="6" stroke-linecap="round"/><path d="M45 17v34" stroke="#9ca3af" stroke-width="6" stroke-linecap="round"/>${person(29,20)}<path d="M28 26l8 13-6 3-9-14z" ${common}/><path d="M30 39l-9 13h7l8-11z" ${common}/><path d="M35 31l10-10" stroke="#6b7280" stroke-width="5" stroke-linecap="round"/>`
+ };
+ return `<svg viewBox="0 0 64 64" aria-hidden="true">${map[type]||map.cable}</svg>`
+}
+
+const polishedPics={
+ bike:'assets/bike.jpg',foam:'assets/foam.jpg',legpress:'assets/legpress.jpg',
+ dbrow:'assets/dbrow.jpg',chest:'assets/chest.jpg',lat:'assets/lat.jpg',
+ pallof:'assets/pallof.jpg',hipabd:'assets/hipabd.jpg',hipext:'assets/hipext.jpg',
+ shrug:'assets/shrug.jpg',facepull:'assets/facepull.jpg',hipthrust:'assets/glutebridge.jpg',
+ glutebridge:'assets/glutebridge.jpg',kneeext:'assets/kneeext.jpg',legcurl:'assets/legcurl.jpg',
+ hinge:'assets/hinge.jpg',seatedrow:'assets/seatedrow.jpg',cross:'assets/cross.jpg'
+};
+const pictureNames={bike:'Exercise bike',foam:'Foam roll',legpress:'Leg press',dbrow:'Dumbbell row',chest:'Chest press',lat:'Lat pulldown',cross:'Cross trainer',seatedrow:'Seated row',cable:'Cable exercise',shrug:'Dumbbell exercise',hipthrust:'Hip thrust',kneeext:'Leg extension',legcurl:'Hamstring curl',hinge:'Barbell hinge'};
+const visual=(e)=>polishedPics[e.pic||e.id]?`<img src="${polishedPics[e.pic||e.id]}" alt="">`:svg(e.icon||e.pic||'cable');
+
+const defaults=[
+ {id:'foam',name:'Thoracic foam roll',kind:'duration',duration:1,icon:'foam',pic:'foam'},
+ {id:'legpress',name:'Leg press — single leg',sets:3,reps:10,weight:35,icon:'legpress',pic:'legpress'},
+ {id:'dbrow',name:'Bent-over row — single arm',sets:3,reps:10,weight:17.5,icon:'row',pic:'dbrow'},
+ {id:'chest',name:'Chest press',sets:3,reps:10,weight:40,icon:'chest',pic:'chest'},
+ {id:'lat',name:'Lat pulldown',sets:3,reps:12,weight:42.5,icon:'pulldown',pic:'lat'},
+ {id:'pallof',name:'Pallof press — split stance',sets:2,reps:10,weight:20,icon:'cable',pic:'pallof'},
+ {id:'hipabd',name:'Cable hip abduction',sets:2,reps:10,weight:17.5,icon:'cable',pic:'hipabd'},
+ {id:'hipext',name:'Cable hip extension',sets:2,reps:10,weight:25,icon:'cable',pic:'hipext'},
+ {id:'shrug',name:'Shoulder shrugs',sets:2,reps:15,weight:17.5,icon:'shrug',pic:'shrug'},
+ {id:'facepull',name:'Cable face pull',sets:3,reps:10,weight:35,icon:'cable',pic:'facepull'},
+ {id:'hipthrust',name:'Weighted glute bridge — dumbbell',sets:3,reps:15,weight:20,icon:'hipthrust',pic:'hipthrust'},
+ {id:'kneeext',name:'Knee extension — single leg',sets:3,reps:10,weight:20,icon:'kneeext',pic:'kneeext'},
+ {id:'legcurl',name:'Lying hamstring curl — machine',sets:3,reps:10,weight:25,icon:'legcurl',pic:'legcurl'},
+ {id:'hinge',name:'Barbell back-strengthening hinge',sets:3,reps:8,weight:20,icon:'hinge',pic:'hinge'},
+ {id:'seatedrow',name:'Seated row',sets:3,reps:10,weight:35,icon:'seatedrow',pic:'seatedrow',badge:'self-added'}
+];
+const cardio={warmup:{id:'bike',name:'Exercise bike',duration:10,detail:'Level 5 · Intervals',icon:'bike',pic:'bike'},finish:{id:'cross',name:'Cross trainer',duration:10,detail:'Level 5 · Rolling hills',icon:'cross',pic:'cross'}};
+
+const exerciseLibrary=[
+ ['bike','Exercise bike','Cardio'],
+ ['cross','Cross trainer','Cardio'],
+ ['foam','Thoracic foam roll','Mobility'],
+ ['legpress','Leg press — single leg','Machine'],
+ ['dbrow','Bent-over row — single arm','Dumbbell'],
+ ['chest','Chest press','Machine'],
+ ['lat','Lat pulldown','Machine'],
+ ['pallof','Pallof press — split stance','Cable'],
+ ['hipabd','Cable hip abduction','Cable'],
+ ['hipext','Cable hip extension','Cable'],
+ ['shrug','Shoulder shrugs','Dumbbell'],
+ ['facepull','Cable face pull','Cable'],
+ ['hipthrust','Weighted glute bridge — dumbbell','Dumbbell'],
+ ['kneeext','Knee extension — single leg','Machine'],
+ ['legcurl','Lying hamstring curl — machine','Machine'],
+ ['hinge','Barbell back-strengthening hinge','Barbell'],
+ ['seatedrow','Seated row','Machine']
+].map(([pic,name,category])=>({pic,name,category,path:polishedPics[pic]}));
+let libCategory='All';
+const key='darrenGymTrackerV1';
+const freshDefaults=()=>defaults.map(e=>({...e,baselineWeight:e.weight,baselineSets:e.sets,baselineReps:e.reps}));
+let state=JSON.parse(localStorage.getItem(key)||'null')||{exercises:freshDefaults(),visits:[],active:null,cardio:{bikeRetired:false,crossRetired:false}};
+if(!state._updatedAt){state._updatedAt=new Date().toISOString();localStorage.setItem(key,JSON.stringify(state));}
+if(!state.exercises){
+  state.exercises=freshDefaults();
+}else{
+  state.exercises=state.exercises.map(e=>{
+    const d=defaults.find(x=>x.id===e.id);
+    return {
+      ...d,...e,
+      pic:d?.pic||e.pic,icon:d?.icon||e.icon,
+      retired:e.retired||false,
+      baselineWeight:e.baselineWeight??d?.weight??e.weight,
+      baselineSets:e.baselineSets??d?.sets??e.sets,
+      baselineReps:e.baselineReps??d?.reps??e.reps
+    };
+  });
+}
+if(!state.cardio)state.cardio={bikeRetired:false,crossRetired:false};
+const buildVersion='3.22';
+const buildKey='darrenGymTrackerBuild';
+if(localStorage.getItem(buildKey)!==buildVersion){
+  // Keep program edits and saved visits, but never inherit an unfinished test session across builds.
+  state.active=null;
+  localStorage.setItem(buildKey,buildVersion);
+  localStorage.setItem(key,JSON.stringify(state));
+}
+let editing=null;
+const save=()=>{
+  state._updatedAt=new Date().toISOString();
+  localStorage.setItem(key,JSON.stringify(state));
+};
+const fmtDate=(iso)=>new Date(iso).toLocaleDateString('en-AU',{day:'2-digit',month:'2-digit',year:'numeric'});
+const trackerBaselineDate='2026-08-30T00:00:00+09:30';
+const fmtTime=(iso)=>new Date(iso).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+
+document.getElementById('today').textContent=new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+function startVisit(){
+ if(state.active)return;
+ state.active={startedAt:new Date().toISOString(),done:{},snapshot:{}};
+ state.exercises.forEach(e=>state.active.snapshot[e.id]={sets:e.sets,reps:e.reps,weight:e.weight,duration:e.duration});
+ state.active.snapshot.bike={duration:cardio.warmup.duration,detail:cardio.warmup.detail};
+ state.active.snapshot.cross={duration:cardio.finish.duration,detail:cardio.finish.detail};
+ save();renderAll();
+}
+let recentlyCompleted=null,doneMoveTimer=null;
+function toggleDone(id){
+ if(!state.active){alert('Start a gym visit first.');return;}
+ if(state.active.done[id]){
+   state.active.done[id]=false;recentlyCompleted=null;clearTimeout(doneMoveTimer);save();renderWorkout();return;
+ }
+ recentlyCompleted=id;
+ renderWorkout();
+ clearTimeout(doneMoveTimer);
+ doneMoveTimer=setTimeout(()=>{
+   state.active.done[id]=true;
+   recentlyCompleted=null;
+   save();renderWorkout();
+ },650);
+}
+function endVisit(){if(!state.active)return; const completed=Object.entries(state.active.done).filter(([,v])=>v).map(([k])=>k); if(!completed.length&&!confirm('Save this visit with no completed items?'))return; state.visits.unshift({id:Date.now(),startedAt:state.active.startedAt,endedAt:new Date().toISOString(),done:completed,snapshot:state.active.snapshot}); state.active=null; save(); renderAll();}
+function cardHTML(e){
+ const done=!!(state.active&&state.active.done[e.id]);
+ const just=recentlyCompleted===e.id;
+ const sub=e.kind==='duration'?`${e.duration} min`:`${e.weight} kg · ${e.sets} × ${e.reps}`;
+ return `<div class="card ${just?'justdone':done?'done':''}" data-id="${e.id}">
+ <div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}${e.badge?`<span class="badge">${e.badge}</span>`:''}</div>
+ <div class="sub">${sub}</div><div class="last">${lastText(e.id)}</div></div>
+ <div class="actions">${e.kind==='duration'?'':`<button class="editbtn" data-edit="${e.id}">Edit</button>`}
+ <button class="donebtn ${done||just?'done':''}" data-done="${e.id}" ${just?'disabled':''}>${done||just?'✓ Done':'Done'}</button></div></div>`;
+}
+function cardioHTML(e){
+ const done=!!(state.active&&state.active.done[e.id]);
+ const just=recentlyCompleted===e.id;
+ return `<div class="card special ${just?'justdone':done?'done':''}">
+ <div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}</div>
+ <div class="sub">${e.duration} min · ${e.detail}</div><div class="last">${lastText(e.id)}</div></div>
+ <div class="actions"><button class="donebtn ${done||just?'done':''}" data-done="${e.id}" ${just?'disabled':''}>${done||just?'✓ Done':'Done'}</button></div></div>`;
+}
+function lastText(id){const v=state.visits.find(v=>v.done.includes(id)); if(!v)return 'No previous visit logged'; if(id==='bike'||id==='cross')return `Last done ${fmtDate(v.startedAt)}`; const s=v.snapshot[id]; if(!s)return `Last done ${fmtDate(v.startedAt)}`; if(s.duration)return `Last: ${s.duration} min · ${fmtDate(v.startedAt)}`; return `Last: ${s.weight} kg · ${s.sets} × ${s.reps} · ${fmtDate(v.startedAt)}`}
+function renderWorkout(){
+ document.getElementById('startBox').style.display=state.active?'none':'block';
+ document.getElementById('endBtn').style.display=state.active?'block':'none';
+ document.getElementById('sessionBadge').textContent=state.active?`Started ${fmtTime(state.active.startedAt)}`:'No active visit';
+ const activeExercises=state.exercises.filter(e=>!e.retired);
+ const score=e=>(state.active&&state.active.done[e.id]&&e.id!==recentlyCompleted)?1:0;
+ const sorted=[...activeExercises].sort((a,b)=>score(a)-score(b));
+ const bikeActive=!state.cardio.bikeRetired,crossActive=!state.cardio.crossRetired;
+ const foam=sorted.find(e=>e.id==='foam');
+ const strengthOnly=sorted.filter(e=>e.id!=='foam');
+ document.getElementById('warmup').innerHTML=(bikeActive?cardioHTML(cardio.warmup):'')+(foam?cardHTML(foam):'');
+ document.getElementById('strength').innerHTML=strengthOnly.map(cardHTML).join('');
+ document.getElementById('finish').innerHTML=crossActive?cardioHTML(cardio.finish):'';
+ const strengthDone=state.active?activeExercises.filter(e=>state.active.done[e.id]).length:0;
+ const cardioDone=state.active?Number(!!(bikeActive&&state.active.done.bike))+Number(!!(crossActive&&state.active.done.cross)):0;
+ const doneCount=strengthDone+cardioDone;
+ const total=activeExercises.length+Number(bikeActive)+Number(crossActive);
+ document.getElementById('sumDone').textContent=`${doneCount} completed`;
+ document.getElementById('sumRemain').textContent=`${total-doneCount} remaining`;
+ document.getElementById('bar').style.width=`${total?Math.round(doneCount/total*100):0}%`;
+ document.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>toggleDone(b.dataset.done));
+ document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
+}
+function openEdit(id){if(!state.active){alert('Start a gym visit first.');return} editing=id; const e=state.exercises.find(x=>x.id===id); document.getElementById('modalTitle').textContent=e.name; document.getElementById('weightInput').value=e.weight??'';document.getElementById('setsInput').value=e.sets??'';document.getElementById('repsInput').value=e.reps??'';document.getElementById('modalBackdrop').classList.add('show');}
+function saveEdit(){const e=state.exercises.find(x=>x.id===editing); if(!e)return; const w=parseFloat(document.getElementById('weightInput').value),s=parseInt(document.getElementById('setsInput').value),r=parseInt(document.getElementById('repsInput').value); if(Number.isNaN(w)||Number.isNaN(s)||Number.isNaN(r)){alert('Please enter weight, sets and reps.');return} e.weight=w;e.sets=s;e.reps=r; state.active.snapshot[e.id]={weight:w,sets:s,reps:r}; save();closeEdit();renderAll();}
+function closeEdit(){document.getElementById('modalBackdrop').classList.remove('show');editing=null}
+function categoryForExercise(id){
+ if(id==='bike'||id==='cross')return 'Cardio';
+ const e=state.exercises.find(x=>x.id===id);
+ if(!e)return 'Other';
+ const lib=exerciseLibrary.find(x=>x.pic===(e.pic||e.icon)||x.name===e.name);
+ return lib?.category||'Other';
+}
+
+function visitDurationMinutes(v){
+  try{
+    const s=new Date(v.startedAt).getTime(), e=new Date(v.endedAt).getTime();
+    if(!Number.isFinite(s)||!Number.isFinite(e)||e<s)return '';
+    return `${Math.max(0,Math.round((e-s)/60000))} min`;
+  }catch(_){return ''}
+}
+
+function renderVisits(){
+ const el=document.getElementById('visitsList');
+ if(!state.visits.length){el.innerHTML='<div class="empty">No visits logged yet.</div>';return}
+ el.innerHTML=state.visits.map(v=>{
+   const completed=v.done.map(id=>{
+     const name=id==='bike'?cardio.warmup.name:id==='cross'?cardio.finish.name:(state.exercises.find(e=>e.id===id)?.name||id);
+     return {id,name,category:categoryForExercise(id)};
+   });
+   const counts={};
+   completed.forEach(x=>counts[x.category]=(counts[x.category]||0)+1);
+   const categoryOrder=['Cardio','Mobility','Machine','Dumbbell','Cable','Barbell','Other'];
+   const summary=categoryOrder.filter(c=>counts[c]).map(c=>`${counts[c]} ${c}`).join(' · ');
+   const grouped=categoryOrder.filter(c=>counts[c]).map(c=>{
+     const names=completed.filter(x=>x.category===c).map(x=>x.name).join(' · ');
+     return `<div style="margin-top:5px"><strong>${c}</strong>: ${names}</div>`;
+   }).join('');
+   return `<div class="visit"><div class="visit-head"><span>${fmtDate(v.startedAt)}</span><small>${fmtTime(v.startedAt)}–${fmtTime(v.endedAt)}${visitDurationMinutes(v)?` · ${visitDurationMinutes(v)}`:''}</small></div>
+   <div class="visit-items"><strong>${summary||'No completed exercises'}</strong>${grouped}</div></div>`;
+ }).join('');
+}
+function renderProgress(){
+ const sel=document.getElementById('exerciseSelect');
+ if(!sel)return;
+ const exercises=Array.isArray(state.exercises)?state.exercises:[];
+ const current=sel.value;
+ const eligible=exercises.filter(e=>e&&e.kind!=='duration');
+ sel.innerHTML=eligible.map(e=>`<option value="${e.id}">${e.name}${e.retired?' (retired)':''}</option>`).join('');
+ if(current&&[...sel.options].some(o=>o.value===current))sel.value=current;
+ else if(eligible.length)sel.value=eligible[0].id;
+ if(!eligible.length){
+   const hist=document.getElementById('exerciseHistory');
+   if(hist)hist.innerHTML='<div class="empty">No weighted exercises available.</div>';
+   drawChart([]);
+   return;
+ }
+ renderProgressDetail();
+}
+function renderProgressDetail(){
+ const sel=document.getElementById('exerciseSelect');
+ if(!sel||!Array.isArray(state.exercises))return;
+ const id=sel.value||(state.exercises.find(e=>e&&e.kind!=='duration')?.id);
+ if(!id){
+   document.getElementById('exerciseHistory').innerHTML='<div class="empty">No weighted exercises available.</div>';
+   drawChart([]);return;
+ }
+ const e=state.exercises.find(x=>x.id===id);
+ const baseline={
+   date:trackerBaselineDate,label:`Starting program · ${fmtDate(trackerBaselineDate)}`,
+   weight:Number(e.baselineWeight??defaults.find(d=>d.id===id)?.weight??e.weight),
+   sets:Number(e.baselineSets??defaults.find(d=>d.id===id)?.sets??e.sets),
+   reps:Number(e.baselineReps??defaults.find(d=>d.id===id)?.reps??e.reps),
+   baseline:true
+ };
+ const saved=state.visits
+   .filter(v=>v.done.includes(id)&&v.snapshot[id])
+   .slice().reverse()
+   .map(v=>({date:v.startedAt,label:fmtDate(v.startedAt),...v.snapshot[id]}));
+ let rows=[baseline,...saved];
+ if(state.active&&state.active.snapshot&&state.active.snapshot[id]){
+   const a=state.active.snapshot[id];
+   const last=rows[rows.length-1];
+   const changed=!last||Number(a.weight)!==Number(last.weight)||Number(a.sets)!==Number(last.sets)||Number(a.reps)!==Number(last.reps);
+   if(changed) rows.push({date:state.active.startedAt,label:'Current',...a,current:true});
+ }
+ const hist=document.getElementById('exerciseHistory');
+ hist.innerHTML=rows.slice().reverse().map(r=>`<div class="history-row"><span>${r.label}</span><strong>${r.weight} kg · ${r.sets} × ${r.reps}</strong></div>`).join('');
+ drawChart(rows);
+ const axis=document.getElementById('progressXAxis');
+ if(axis){
+   axis.innerHTML=rows.map(r=>`<span>${r.current?'Current':fmtDate(r.date)}</span>`).join('');
+ }
+}
+function drawChart(rows){
+ const c=document.getElementById('chart'),ctx=c.getContext('2d');
+ const w=c.width,h=c.height,bottom=58,top=20,left=42,right=12;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+ const plotBottom=h-bottom,plotHeight=plotBottom-top;
+ ctx.strokeStyle='#e5e7eb';ctx.lineWidth=1;
+ for(let i=0;i<4;i++){let yy=top+(plotHeight*i/3);ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke()}
+ if(rows.length<1){ctx.fillStyle='#9ca3af';ctx.font='14px sans-serif';ctx.fillText('Progress chart will appear after visits are logged.',left+5,95);return}
+ const vals=rows.map(r=>Number(r.weight));let min=Math.min(...vals),max=Math.max(...vals);
+ if(max===min){min=Math.max(0,min-5);max+=5}else{const pad=(max-min)*.2;min=Math.max(0,min-pad);max+=pad}
+ const x=i=>left+(w-left-right)*(rows.length===1?0:i/(rows.length-1));
+ const y=v=>plotBottom-(plotHeight-8)*(v-min)/(max-min);
+ if(rows.length>1){ctx.strokeStyle='#111827';ctx.lineWidth=4;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();rows.forEach((r,i)=>i?ctx.lineTo(x(i),y(r.weight)):ctx.moveTo(x(i),y(r.weight)));ctx.stroke()}
+ rows.forEach((r,i)=>{
+   ctx.beginPath();ctx.fillStyle='#111827';ctx.arc(x(i),y(r.weight),5,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='#9ca3af';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x(i),plotBottom+3);ctx.lineTo(x(i),plotBottom+8);ctx.stroke();
+   const label=r.current?'Current':fmtDate(r.date);
+   ctx.save();ctx.translate(x(i),plotBottom+15);ctx.rotate(-Math.PI/4);
+   ctx.fillStyle='#64748b';ctx.font='11px sans-serif';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(label,0,0);ctx.restore();
+ });
+ ctx.fillStyle='#6b7280';ctx.font='12px sans-serif';ctx.textAlign='left';
+ ctx.fillText(`${min.toFixed(1)} kg`,2,plotBottom);ctx.fillText(`${max.toFixed(1)} kg`,2,top);
+ const axis=document.getElementById('progressXAxis');if(axis)axis.innerHTML='';
+}
+let manageMode='active',manageEditing=null,selectedPic='cable',manageFromLibrary=false,pendingRetire=null,retireTimer=null;
+function renderManage(){
+ const cardioItems=[
+  {...cardio.warmup,kind:'cardio',retired:!!state.cardio.bikeRetired},
+  {...cardio.finish,kind:'cardio',retired:!!state.cardio.crossRetired}
+ ];
+ const all=[...cardioItems,...state.exercises];
+ const list=all.filter(e=>manageMode==='retired'?e.retired:!e.retired);
+ document.getElementById('activeSeg').classList.toggle('active',manageMode==='active');
+ document.getElementById('retiredSeg').classList.toggle('active',manageMode==='retired');
+ document.getElementById('manageList').innerHTML=list.length?list.map(e=>{
+   const detail=e.kind==='cardio'?`${e.duration} min · ${e.detail}`:e.kind==='duration'?`${e.duration} min`:`${e.weight} kg · ${e.sets} × ${e.reps}`;
+   const edit=e.kind==='cardio'?'':`<button class="smallbtn" data-medit="${e.id}">Edit</button>`;
+   return `<div class="manage-card"><div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}${e.kind==='cardio'?'<span class="badge">cardio</span>':''}</div><div class="last">${detail}</div></div>
+   <div class="actions">${edit}<button class="smallbtn ${pendingRetire===e.id?'confirming':(e.retired?'':'danger')}" data-retire="${e.id}" ${pendingRetire===e.id?'disabled':''}>${pendingRetire===e.id?(e.retired?'✓ Reactivating':'✓ Retired'):(e.retired?'Reactivate':'Retire')}</button></div></div>`;
+ }).join(''):'<div class="empty">No exercises here.</div>';
+ document.querySelectorAll('[data-medit]').forEach(b=>b.onclick=()=>openManage(b.dataset.medit));
+ document.querySelectorAll('[data-retire]').forEach(b=>b.onclick=()=>toggleRetire(b.dataset.retire));
+}
+function renderPicLibrary(){const pics=[...new Set(exerciseLibrary.map(x=>x.pic))];document.getElementById('pictureLibrary').innerHTML=pics.map(k=>`<button class="picchoice ${selectedPic===k?'selected':''}" data-pic="${k}" type="button">${polishedPics[k]?`<img src="${polishedPics[k]}">`:`<div class="libsvg">${svg(k==='lat'?'pulldown':k==='dbrow'?'row':k)}</div>`}<span>${exerciseLibrary.find(x=>x.pic===k)?.name||pictureNames[k]||k}</span></button>`).join('');document.querySelectorAll('[data-pic]').forEach(b=>b.onclick=()=>{selectedPic=b.dataset.pic;renderPicLibrary()})}
+function openManage(id=null){
+ manageEditing=id;manageFromLibrary=false;
+ const e=id?state.exercises.find(x=>x.id===id):null;
+ document.getElementById('manageTitle').textContent=e?'Edit exercise':'Add exercise';
+ const n=document.getElementById('nameInput');
+ n.readOnly=false;n.value=e?.name||'';
+ document.getElementById('mWeight').value=e?.weight??'';
+ document.getElementById('mSets').value=e?.sets??3;
+ document.getElementById('mReps').value=e?.reps??10;
+ selectedPic=e?.pic||e?.icon||'cable';
+ document.getElementById('pictureField').style.display='';
+ renderPicLibrary();
+ const back=document.getElementById('manageModal');back.classList.add('show');
+ requestAnimationFrame(()=>{const m=back.querySelector('.modal');m.scrollTop=0;if(!id)document.getElementById('mWeight').focus()});
+}
+function openManageFromLibrary(pic,name){
+ openManage();
+ manageFromLibrary=true;selectedPic=pic;
+ const n=document.getElementById('nameInput');n.value=name;n.readOnly=true;
+ document.getElementById('pictureField').style.display='none';
+ document.getElementById('manageTitle').textContent=`Add ${name}`;
+ requestAnimationFrame(()=>{document.querySelector('#manageModal .modal').scrollTop=0;document.getElementById('mWeight').focus()});
+}
+function closeManage(){
+ document.getElementById('manageModal').classList.remove('show');
+ document.getElementById('nameInput').readOnly=false;
+ document.getElementById('pictureField').style.display='';
+ manageEditing=null;manageFromLibrary=false;
+}
+function saveManage(){
+ const name=document.getElementById('nameInput').value.trim(),
+ weight=parseFloat(document.getElementById('mWeight').value),
+ sets=parseInt(document.getElementById('mSets').value),
+ reps=parseInt(document.getElementById('mReps').value);
+ if(!name||[weight,sets,reps].some(Number.isNaN)){alert('Please enter weight, sets and reps.');return}
+ if(manageEditing){
+   Object.assign(state.exercises.find(e=>e.id===manageEditing),{name,weight,sets,reps,pic:selectedPic});
+ }else{
+   state.exercises.push({id:'custom_'+Date.now(),name,weight,sets,reps,pic:selectedPic,icon:selectedPic,retired:false,badge:'self-added',
+     baselineWeight:weight,baselineSets:sets,baselineReps:reps});
+ }
+ save();closeManage();renderAll();
+}
+function toggleRetire(id){
+ if(pendingRetire)return;
+ pendingRetire=id;renderManage();
+ clearTimeout(retireTimer);
+ retireTimer=setTimeout(()=>{
+   if(id==='bike'){state.cardio.bikeRetired=!state.cardio.bikeRetired}
+   else if(id==='cross'){state.cardio.crossRetired=!state.cardio.crossRetired}
+   else {const e=state.exercises.find(x=>x.id===id);if(e)e.retired=!e.retired}
+   pendingRetire=null;save();renderAll();
+ },650);
+}
+function libraryStatus(x){
+ if(x.pic==='bike')return state.cardio.bikeRetired?'retired':'active';
+ if(x.pic==='cross')return state.cardio.crossRetired?'retired':'active';
+ const matches=state.exercises.filter(e=>(e.pic||e.icon)===x.pic||e.name===x.name);
+ if(matches.some(e=>!e.retired))return 'active';
+ if(matches.some(e=>e.retired))return 'retired';
+ return 'absent';
+}
+function reactivateFromLibrary(x){
+ if(x.pic==='bike')state.cardio.bikeRetired=false;
+ else if(x.pic==='cross')state.cardio.crossRetired=false;
+ else{
+   const e=state.exercises.find(e=>e.retired&&((e.pic||e.icon)===x.pic||e.name===x.name));
+   if(e)e.retired=false;
+ }
+ save();renderAll();alert(`${x.name} has been reactivated.`);
+}
+function renderLibrary(){
+ const grid=document.getElementById('libraryGrid'),catsEl=document.getElementById('libCats'),search=document.getElementById('libSearch'),count=document.getElementById('libraryCount');
+ if(!grid||!catsEl||!search||!count)return;
+ const cats=['All',...new Set(exerciseLibrary.map(x=>x.category))];
+ catsEl.innerHTML=cats.map(c=>`<button class="libcat ${libCategory===c?'active':''}" data-lcat="${c}">${c}</button>`).join('');
+ const q=(search.value||'').toLowerCase();
+ const rows=exerciseLibrary.filter(x=>(libCategory==='All'||x.category===libCategory)&&x.name.toLowerCase().includes(q));
+ count.textContent=`${rows.length} exercises shown · ${exerciseLibrary.length} in library`;
+ grid.innerHTML=rows.map((x,i)=>{
+   const status=libraryStatus(x);
+   const action=status==='active'
+     ? `<button class="use" disabled style="opacity:.55;cursor:default">Already in workout</button>`
+     : status==='retired'
+       ? `<button class="use" data-reactivate="${i}">Reactivate</button>`
+       : `<button class="use" data-libpic="${x.pic}" data-libname="${x.name}">Add to workout</button>`;
+   return `<div class="libcard"><img src="${x.path}" alt="${x.name}"><div class="lname">${x.name}</div><div class="lcat">${x.category}</div>${action}</div>`;
+ }).join('');
+ document.querySelectorAll('[data-lcat]').forEach(b=>b.onclick=()=>{libCategory=b.dataset.lcat;renderLibrary()});
+ document.querySelectorAll('[data-libpic]').forEach(b=>b.onclick=()=>openManageFromLibrary(b.dataset.libpic,b.dataset.libname));
+ document.querySelectorAll('[data-reactivate]').forEach(b=>b.onclick=()=>reactivateFromLibrary(rows[Number(b.dataset.reactivate)]));
+}
+function renderAll(){renderWorkout();renderVisits();renderProgress();renderManage();renderLibrary()}
+
+function resetTestData(){
+ if(!confirm('Clear all test visits and restore the original starting weights, sets and reps?'))return;
+ state={exercises:freshDefaults(),visits:[],active:null,cardio:{bikeRetired:false,crossRetired:false}};
+ recentlyCompleted=null;
+ save();
+ switchView('workout');
+ setTimeout(()=>renderAll(),0);
+}
+document.getElementById('resetTestData').onclick=resetTestData;
+document.getElementById('startBtn').onclick=startVisit;document.getElementById('endBtn').onclick=endVisit;document.getElementById('cancelEdit').onclick=closeEdit;document.getElementById('saveEdit').onclick=saveEdit;document.getElementById('modalBackdrop').onclick=e=>{if(e.target.id==='modalBackdrop')closeEdit()};document.getElementById('exerciseSelect').onchange=renderProgressDetail;document.getElementById('addExercise').onclick=()=>openManage();document.getElementById('libAdd').onclick=()=>openManage();document.getElementById('libSearch').oninput=renderLibrary;document.getElementById('activeSeg').onclick=()=>{manageMode='active';renderManage()};document.getElementById('retiredSeg').onclick=()=>{manageMode='retired';renderManage()};document.getElementById('cancelManage').onclick=closeManage;document.getElementById('saveManage').onclick=saveManage;document.getElementById('manageModal').onclick=e=>{if(e.target.id==='manageModal')closeManage()};
+function switchView(name){document.querySelectorAll('.tab,.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.view===name));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===name));if(name==='progress')setTimeout(renderProgressDetail,10);if(name==='manage')renderManage();if(name==='library')renderLibrary(); if(name==='cloud')renderCloudAuth();}
+document.querySelectorAll('.tab,.navbtn').forEach(t=>t.onclick=()=>switchView(t.dataset.view));
+renderAll();
+
+const APPROVED_ARTWORK = {
+  bike:'assets/bike.jpg', foam:'assets/foam.jpg', legpress:'assets/legpress.jpg',
+  dbrow:'assets/dbrow.jpg', chest:'assets/chest.jpg', lat:'assets/lat.jpg',
+  pallof:'assets/pallof.jpg', hipabd:'assets/hipabd.jpg', hipext:'assets/hipext.jpg',
+  shrug:'assets/shrug.jpg', facepull:'assets/facepull.jpg', hipthrust:'assets/glutebridge.jpg',
+  glutebridge:'assets/glutebridge.jpg', kneeext:'assets/kneeext.jpg', legcurl:'assets/legcurl.jpg',
+  hinge:'assets/hinge.jpg', seatedrow:'assets/seatedrow.jpg', cross:'assets/cross.jpg'
+};
+
+</script>
+
+
+
+
+<script>
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  }
+});
+</script>
+
+
+<script id="v43-auth-js">
+const SUPABASE_URL = 'https://vryjtvtomayinqxaxddn.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_9udDEZanBpS9y0dgps1mbQ_D-Ef0hzL';
+const AUTH_STORAGE_KEY = 'gymTrackerSupabaseAuth';
+let cachedCloudStateRow=null;
+let cachedCloudStateAt=0;
+const CLOUD_CACHE_MS=60000;
+
+function getAuth() {
+  try { return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || 'null'); }
+  catch (_) { return null; }
+}
+function setAuth(auth) {
+  if (auth) localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+  else localStorage.removeItem(AUTH_STORAGE_KEY);
+}
+function cloudMsg(text, cls='') {
+  const el=document.getElementById('cloudMessage'); if(!el) return;
+  el.textContent=text||''; el.className='cloud-message'+(cls?' '+cls:'');
+}
+function tokenExpiryMs(auth) {
+  if(!auth) return 0;
+  if(auth.expires_at) return Number(auth.expires_at) * 1000;
+  return 0;
+}
+
+function authLooksExpired(auth, skewMs=30000) {
+  const exp=tokenExpiryMs(auth);
+  return !!(exp && Date.now() >= exp - skewMs);
+}
+
+function setCloudAuthUi(mode, auth=null) {
+  const out=document.getElementById('cloudSignedOut');
+  const inn=document.getElementById('cloudSignedIn');
+  const chip=document.getElementById('cloudChip');
+  const email=document.getElementById('cloudUserEmail');
+
+  if(mode==='connected'){
+    if(out) out.style.display='none';
+    if(inn) inn.style.display='block';
+    if(chip) chip.textContent='Cloud connected';
+    if(email) email.textContent=auth?.user?.email || 'Signed in';
+  }else if(mode==='checking'){
+    if(out) out.style.display='none';
+    if(inn) inn.style.display='block';
+    if(chip) chip.textContent='Checking cloud…';
+    if(email) email.textContent=auth?.user?.email || 'Checking session';
+  }else{
+    if(out) out.style.display='block';
+    if(inn) inn.style.display='none';
+    if(chip) chip.textContent='Sign in required';
+  }
+}
+
+function renderCloudAuth() {
+  const auth=getAuth();
+  if(!(auth && auth.access_token && auth.user)) {
+    setCloudAuthUi('required');
+    return;
+  }
+  setCloudAuthUi(authLooksExpired(auth) ? 'checking' : 'connected', auth);
+}
+
+async function refreshCloudSession() {
+  const auth=getAuth();
+  if(!(auth && auth.refresh_token)) {
+    setAuth(null);
+    setCloudAuthUi('required');
+    return false;
+  }
+  try{
+    const res=await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token',{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({refresh_token:auth.refresh_token})
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error();
+    if(!data.expires_at && data.expires_in){
+      data.expires_at=Math.floor(Date.now()/1000)+Number(data.expires_in);
+    }
+    const merged={...auth,...data,user:data.user||auth.user};
+    setAuth(merged);
+    setCloudAuthUi('connected',merged);
+    return true;
+  }catch(_){
+    setAuth(null);
+    setCloudAuthUi('required');
+    return false;
+  }
+}
+
+async function ensureValidCloudSession() {
+  const auth=getAuth();
+  if(!(auth && auth.access_token && auth.user)) {
+    setCloudAuthUi('required');
+    return false;
+  }
+  if(authLooksExpired(auth)) {
+    setCloudAuthUi('checking',auth);
+    return await refreshCloudSession();
+  }
+  setCloudAuthUi('connected',auth);
+  return true;
+}
+async function cloudSignIn() {
+  const email=(document.getElementById('cloudEmail')?.value||'').trim();
+  const password=document.getElementById('cloudPassword')?.value||'';
+  if(!email || !password) { cloudMsg('Enter email and password.','error'); return; }
+  cloudMsg('Signing in…');
+  try {
+    const res=await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,password})
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data?.error_description || data?.msg || data?.message || 'Sign in failed.');
+    if(!data.expires_at && data.expires_in){
+      data.expires_at=Math.floor(Date.now()/1000)+Number(data.expires_in);
+    }
+    setAuth(data);
+    cloudMsg('Signed in.','good');
+    setCloudAuthUi('connected',data);
+  } catch(e) {
+    cloudMsg(e.message || 'Sign in failed.','error');
+  }
+}
+function cloudSignOut() {
+  setAuth(null); renderCloudAuth(); cloudMsg('');
+}
+
+function cloudBackupMsg(text, cls='') {
+  const el=document.getElementById('cloudBackupMessage'); if(!el) return;
+  el.textContent=text||''; el.className='cloud-message'+(cls?' '+cls:'');
+}
+
+function renderCloudBackupStatus() {
+  const el=document.getElementById('cloudBackupStatus'); if(!el) return;
+  const last=localStorage.getItem('gymTrackerLastCloudBackup');
+  el.textContent=last
+    ? `Last backup ${new Date(last).toLocaleString('en-AU')}`
+    : 'No backup made from this device yet.';
+}
+
+function cloudCheckMsg(text, cls='') {
+  const el=document.getElementById('cloudCheckMessage'); if(!el) return;
+  el.textContent=text||''; el.className='cloud-message'+(cls?' '+cls:'');
+}
+
+function renderCloudCheckStatus() {
+  const el=document.getElementById('cloudCheckStatus'); if(!el) return;
+  const raw=localStorage.getItem('gymTrackerLastCloudCheck');
+  if(!raw){el.textContent='Not checked yet.';return}
+  try{
+    const info=JSON.parse(raw);
+    const when=info.updated_at ? new Date(info.updated_at).toLocaleString('en-AU') : 'unknown time';
+    const count=Number.isFinite(info.exerciseCount)
+      ? ` · ${info.exerciseCount} exercises${Number.isFinite(info.programCount)&&Number.isFinite(info.cardioCount)?` (${info.programCount} program + ${info.cardioCount} cardio)`:''}`
+      : '';
+    el.textContent=`Cloud backup found · ${when}${count}`;
+  }catch(_){
+    el.textContent='Cloud backup previously checked.';
+  }
+}
+
+async function checkCloudBackup() {
+  const button=document.getElementById('cloudCheckNow');
+  if(button){button.disabled=true;button.textContent='Checking…'}
+  cloudCheckMsg('Reading cloud backup…');
+
+  try{
+    const row=await fetchCloudStateForRestore();
+    const remoteState=row.state;
+    const programCount=remoteState.exercises.length;
+    const cardioCount=
+      (remoteState.cardio && remoteState.cardio.bikeRetired===false ? 1 : 0) +
+      (remoteState.cardio && remoteState.cardio.crossRetired===false ? 1 : 0);
+    const totalExerciseCount=programCount+cardioCount;
+
+    const info={
+      updated_at:row.updated_at||null,
+      exerciseCount:totalExerciseCount,
+      programCount,
+      cardioCount,
+      visitCount:remoteState.visits.length
+    };
+
+    localStorage.setItem('gymTrackerLastCloudCheck',JSON.stringify(info));
+    renderCloudCheckStatus();
+    cloudCheckMsg(
+      `Cloud backup is valid: ${info.exerciseCount} exercises (${info.programCount} program + ${info.cardioCount} cardio) and ${info.visitCount} visits. Local Gym Tracker data was not changed.`,
+      'good'
+    );
+  }catch(e){
+    cloudCheckMsg(e.message||'Cloud check failed.','error');
+  }finally{
+    if(button){button.disabled=false;button.textContent='Check cloud backup'}
+  }
+}
+
+const PRE_RESTORE_KEY='gymTrackerPreRestoreSnapshot';
+const LAST_RESTORE_KEY='gymTrackerLastRestore';
+
+function cloudRestoreMsg(text, cls='') {
+  const el=document.getElementById('cloudRestoreMessage'); if(!el) return;
+  el.textContent=text||''; el.className='cloud-message'+(cls?' '+cls:'');
+}
+
+function renderRestoreStatus() {
+  const status=document.getElementById('cloudRestoreStatus');
+  const last=localStorage.getItem(LAST_RESTORE_KEY);
+  if(status){
+    status.textContent=last
+      ? `Last restore ${new Date(last).toLocaleString('en-AU')}`
+      : 'No restore performed on this device.';
+  }
+
+  const panel=document.getElementById('cloudRollbackPanel');
+  const rbStatus=document.getElementById('cloudRollbackStatus');
+  const raw=localStorage.getItem(PRE_RESTORE_KEY);
+  if(panel) panel.style.display=raw?'flex':'none';
+
+  if(raw && rbStatus){
+    try{
+      const snap=JSON.parse(raw);
+      rbStatus.textContent=`Snapshot saved ${new Date(snap.savedAt).toLocaleString('en-AU')}`;
+    }catch(_){
+      rbStatus.textContent='A local pre-restore snapshot is available.';
+    }
+  }
+}
+
+
+async function authenticatedCloudFetch(url, options={}) {
+  if(!(await ensureValidCloudSession())) {
+    throw new Error('Cloud sign-in is required.');
+  }
+
+  const run=()=>fetch(url,{
+    ...options,
+    headers:{
+      ...(options.headers||{}),
+      'apikey':SUPABASE_KEY,
+      'Authorization':`Bearer ${getAuth()?.access_token||''}`
+    }
+  });
+
+  let res=await run();
+  if(res.status===401){
+    const refreshed=await refreshCloudSession();
+    if(!refreshed) throw new Error('Cloud sign-in is required.');
+    res=await run();
+  }
+  return res;
+}
+
+async function fetchCloudStateForRestore(forceFresh=false) {
+  if(!forceFresh && cachedCloudStateRow && (Date.now()-cachedCloudStateAt)<CLOUD_CACHE_MS){
+    return JSON.parse(JSON.stringify(cachedCloudStateRow));
+  }
+
+  const auth=getAuth();
+  const userId=auth?.user?.id;
+  if(!userId && !(await ensureValidCloudSession())) throw new Error('Cloud sign-in is required.');
+
+  const current=getAuth();
+  const url=SUPABASE_URL
+    + '/rest/v1/gym_tracker_state?user_id=eq.'
+    + encodeURIComponent(current.user.id)
+    + '&select=state,updated_at';
+
+  const res=await authenticatedCloudFetch(url,{
+    method:'GET',
+    headers:{'Accept':'application/json'}
+  });
+
+  if(!res.ok){
+    let detail='';
+    try{
+      const data=await res.json();
+      detail=data?.message || data?.details || data?.hint || '';
+    }catch(_){}
+    throw new Error(detail || `Cloud request failed (${res.status}).`);
+  }
+
+  const rows=await res.json();
+  if(!Array.isArray(rows) || !rows.length) throw new Error('No cloud backup found for this account.');
+
+  const row=rows[0];
+  const remoteState=row?.state;
+  if(!remoteState || !Array.isArray(remoteState.exercises) || !Array.isArray(remoteState.visits)) {
+    throw new Error('Cloud backup was found, but its Gym Tracker data is not valid.');
+  }
+
+  cachedCloudStateRow=JSON.parse(JSON.stringify(row));
+  cachedCloudStateAt=Date.now();
+  return row;
+}
+
+async function restoreFromCloud() {
+  const button=document.getElementById('cloudRestoreNow');
+  if(button){button.disabled=true;button.textContent='Checking…'}
+  cloudRestoreMsg('Reading and validating cloud backup…');
+
+  try{
+    const row=await fetchCloudStateForRestore();
+    const remoteState=row.state;
+
+    const programCount=remoteState.exercises.length;
+    const cardioCount=
+      (remoteState.cardio && remoteState.cardio.bikeRetired===false ? 1 : 0) +
+      (remoteState.cardio && remoteState.cardio.crossRetired===false ? 1 : 0);
+    const totalCount=programCount+cardioCount;
+    const visitCount=remoteState.visits.length;
+    const updated=row.updated_at ? new Date(row.updated_at).toLocaleString('en-AU') : 'unknown time';
+
+    const ok=confirm(
+      `Restore Gym Tracker from cloud?\n\n`
+      + `Cloud backup: ${updated}\n`
+      + `${totalCount} exercises (${programCount} program + ${cardioCount} cardio)\n`
+      + `${visitCount} visits\n\n`
+      + `Your current local Gym Tracker state will be saved first so you can undo this restore.`
+    );
+    if(!ok){
+      cloudRestoreMsg('Restore cancelled.');
+      return;
+    }
+
+    // Preserve current local state before changing anything.
+    const snapshot={
+      savedAt:new Date().toISOString(),
+      state:JSON.parse(JSON.stringify(state))
+    };
+    localStorage.setItem(PRE_RESTORE_KEY,JSON.stringify(snapshot));
+
+    // Apply validated remote copy.
+    state=JSON.parse(JSON.stringify(remoteState));
+    state._updatedAt = row.updated_at || state._updatedAt || new Date().toISOString();
+    localStorage.setItem(key,JSON.stringify(state));
+    localStorage.setItem(LAST_RESTORE_KEY,new Date().toISOString());
+
+    renderAll();
+    renderCloudAuth();
+    renderCloudBackupStatus();
+    renderCloudCheckStatus();
+    renderRestoreStatus();
+
+    cloudRestoreMsg(
+      `Restore completed from cloud backup dated ${updated}. A rollback snapshot of the previous local state is available.`,
+      'good'
+    );
+  }catch(e){
+    cloudRestoreMsg(e.message || 'Restore failed.','error');
+  }finally{
+    if(button){button.disabled=false;button.textContent='Restore from cloud'}
+  }
+}
+
+function rollbackLastRestore() {
+  const raw=localStorage.getItem(PRE_RESTORE_KEY);
+  if(!raw){
+    cloudRestoreMsg('No rollback snapshot is available.','error');
+    renderRestoreStatus();
+    return;
+  }
+
+  let snapshot;
+  try{
+    snapshot=JSON.parse(raw);
+    if(!snapshot?.state || !Array.isArray(snapshot.state.exercises) || !Array.isArray(snapshot.state.visits)) {
+      throw new Error();
+    }
+  }catch(_){
+    cloudRestoreMsg('Rollback snapshot is not valid.','error');
+    return;
+  }
+
+  if(!confirm('Undo the last cloud restore and return to the saved local state?')) return;
+
+  state=JSON.parse(JSON.stringify(snapshot.state));
+  localStorage.setItem(key,JSON.stringify(state));
+  localStorage.removeItem(PRE_RESTORE_KEY);
+  localStorage.removeItem(LAST_RESTORE_KEY);
+
+  renderAll();
+  renderCloudAuth();
+  renderCloudBackupStatus();
+  renderCloudCheckStatus();
+  renderRestoreStatus();
+
+  cloudRestoreMsg('Last cloud restore was undone. The previous local Gym Tracker state has been restored.','good');
+}
+
+function cloudSyncMsg(text, cls='') {
+  const el=document.getElementById('cloudSyncMessage'); if(!el) return;
+  el.textContent=text||''; el.className='cloud-message'+(cls?' '+cls:'');
+}
+function renderSyncStatus(text) {
+  const el=document.getElementById('cloudSyncStatus'); if(el) el.textContent=text||'Not checked yet.';
+  const everyday=document.getElementById('cloudEverydayStatus');
+  if(everyday) everyday.textContent=text||'Not checked yet.';
+}
+let syncRecommendation=null;
+
+function renderSyncAction(kind, localText='', cloudText='') {
+  const panel=document.getElementById('cloudSyncActionPanel');
+  const title=document.getElementById('cloudSyncActionTitle');
+  const text=document.getElementById('cloudSyncActionText');
+  const button=document.getElementById('cloudSyncActionButton');
+
+  syncRecommendation=kind||null;
+  if(!panel||!title||!text||!button)return;
+
+  if(!kind){
+    panel.style.display='none';
+    return;
+  }
+
+  panel.style.display='flex';
+
+  if(kind==='upload'){
+    title.textContent='Recommended: upload newer local copy';
+    text.textContent=`Local ${localText} is newer than cloud ${cloudText}.`;
+    button.textContent='Upload newer local copy';
+  }else if(kind==='restore'){
+    title.textContent='Recommended: restore newer cloud copy';
+    text.textContent=`Cloud ${cloudText} is newer than local ${localText}.`;
+    button.textContent='Restore newer cloud copy';
+  }else{
+    title.textContent='Local and cloud are already in sync';
+    text.textContent='No action is required.';
+    button.textContent='No action required';
+    button.disabled=true;
+  }
+
+  if(kind!=='same') button.disabled=false;
+}
+
+
+function normalizedStateForCompare(input) {
+  const copy=JSON.parse(JSON.stringify(input||{}));
+  delete copy._updatedAt;
+  return copy;
+}
+
+function stableStringify(value) {
+  if(value===null || typeof value!=='object') return JSON.stringify(value);
+  if(Array.isArray(value)) return '[' + value.map(stableStringify).join(',') + ']';
+  const keys=Object.keys(value).sort();
+  return '{' + keys.map(k=>JSON.stringify(k)+':'+stableStringify(value[k])).join(',') + '}';
+}
+
+function statesHaveSameContent(a,b) {
+  return stableStringify(normalizedStateForCompare(a)) === stableStringify(normalizedStateForCompare(b));
+}
+
+function showStartupSyncBanner(kind, localText='', cloudText='') {
+  const banner=document.getElementById('startupSyncBanner');
+  const title=document.getElementById('startupSyncTitle');
+  const text=document.getElementById('startupSyncText');
+  const button=document.getElementById('startupSyncButton');
+  if(!banner||!title||!text||!button)return;
+
+  if(!kind || kind==='same'){
+    banner.style.display='none';
+    banner.dataset.kind='';
+    return;
+  }
+
+  banner.dataset.kind=kind;
+  banner.style.display='flex';
+
+  if(kind==='upload'){
+    title.textContent='This device has newer Gym Tracker data';
+    text.textContent=`Local ${localText} · Cloud ${cloudText}`;
+    button.textContent='Sync to cloud';
+  }else if(kind==='restore'){
+    title.textContent='Cloud has newer Gym Tracker data';
+    text.textContent=`Cloud ${cloudText} · Local ${localText}`;
+    button.textContent='Sync this device';
+  }
+}
+
+async function startupCompareLocalAndCloud() {
+  const auth=getAuth();
+  if(!(auth && auth.access_token && auth.user && auth.user.id)) return;
+
+  try{
+    const row=await fetchCloudStateForRestore();
+    const remoteState=row.state;
+
+    // Content equality wins over timestamps.
+    if(statesHaveSameContent(state,remoteState)){
+      showStartupSyncBanner('same');
+      renderSyncStatus('Local and cloud are in sync.');
+      return;
+    }
+
+    const cloudTimeRaw=row.updated_at || remoteState?._updatedAt;
+    const localTimeRaw=state?._updatedAt;
+    if(!cloudTimeRaw || !localTimeRaw) return;
+
+    const cloudMs=new Date(cloudTimeRaw).getTime();
+    const localMs=new Date(localTimeRaw).getTime();
+    if(!Number.isFinite(cloudMs)||!Number.isFinite(localMs)) return;
+
+    const localText=new Date(localTimeRaw).toLocaleString('en-AU');
+    const cloudText=new Date(cloudTimeRaw).toLocaleString('en-AU');
+
+    if(localMs > cloudMs){
+      showStartupSyncBanner('upload',localText,cloudText);
+      renderSyncStatus('This device has newer data.');
+    }else{
+      showStartupSyncBanner('restore',localText,cloudText);
+      renderSyncStatus('Cloud has newer data.');
+    }
+  }catch(_){
+    // Startup check is non-blocking; Cloud page remains available for manual checks.
+  }
+}
+
+async function applyStartupSyncAction() {
+  const banner=document.getElementById('startupSyncBanner');
+  const kind=banner?.dataset.kind;
+
+  if(kind==='upload'){
+    if(!confirm('Upload the newer local Gym Tracker copy to cloud?')) return;
+    await backupToCloud();
+    await startupCompareLocalAndCloud();
+  }else if(kind==='restore'){
+    await restoreFromCloud();
+    await startupCompareLocalAndCloud();
+  }
+}
+
+async function compareLocalAndCloud() {
+  const button=document.getElementById('cloudCompareNow');
+  if(button){button.disabled=true;button.textContent='Comparing…'}
+  renderSyncAction(null);
+  const usedRecentCache=!!(cachedCloudStateRow && (Date.now()-cachedCloudStateAt)<CLOUD_CACHE_MS);
+  cloudSyncMsg(usedRecentCache?'Using recent cloud check…':'Reading cloud data…');
+  try{
+    const row=await fetchCloudStateForRestore();
+    const remoteState=row.state;
+
+    if(statesHaveSameContent(state,remoteState)){
+      renderSyncStatus('Local and cloud are in sync.');
+      cloudSyncMsg('Gym Tracker content is identical. Different storage timestamps are ignored.','good');
+      renderSyncAction('same');
+      return;
+    }
+
+    const cloudTimeRaw=row.updated_at || remoteState?._updatedAt;
+    const localTimeRaw=state?._updatedAt;
+    if(!cloudTimeRaw || !localTimeRaw) throw new Error('Could not determine both local and cloud timestamps.');
+
+    const cloudMs=new Date(cloudTimeRaw).getTime();
+    const localMs=new Date(localTimeRaw).getTime();
+    if(!Number.isFinite(cloudMs)||!Number.isFinite(localMs)) throw new Error('One of the sync timestamps is invalid.');
+
+    const localText=new Date(localTimeRaw).toLocaleString('en-AU');
+    const cloudText=new Date(cloudTimeRaw).toLocaleString('en-AU');
+
+    if(localMs > cloudMs){
+      renderSyncStatus('Local copy is newer.');
+      cloudSyncMsg(`Local: ${localText} · Cloud: ${cloudText}.`,'good');
+      renderSyncAction('upload',localText,cloudText);
+    }else{
+      renderSyncStatus('Cloud copy is newer.');
+      cloudSyncMsg(`Local: ${localText} · Cloud: ${cloudText}.`,'good');
+      renderSyncAction('restore',localText,cloudText);
+    }
+  }catch(e){
+    renderSyncStatus('Comparison failed.');
+    renderSyncAction(null);
+    cloudSyncMsg(e.message||'Comparison failed.','error');
+  }finally{
+    if(button){button.disabled=false;button.textContent='Check now'}
+  }
+}
+
+async function applyRecommendedSyncAction() {
+  if(syncRecommendation==='upload'){
+    if(!confirm('Upload the newer local Gym Tracker copy to cloud?')) return;
+    await backupToCloud();
+    await compareLocalAndCloud();
+  }else if(syncRecommendation==='restore'){
+    await restoreFromCloud();
+    await compareLocalAndCloud();
+  }
+}
+
+async function backupToCloud() {
+  if(!(await ensureValidCloudSession())) {
+    cloudBackupMsg('Cloud sign-in is required.','error'); return;
+  }
+  const auth=getAuth();
+
+  const button=document.getElementById('cloudBackupNow');
+  if(button){button.disabled=true;button.textContent='Backing up…'}
+  cloudBackupMsg('Uploading a copy of this device…');
+
+  try {
+    const now=new Date().toISOString();
+    const res=await authenticatedCloudFetch(
+      SUPABASE_URL + '/rest/v1/gym_tracker_state?on_conflict=user_id',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Prefer':'resolution=merge-duplicates,return=minimal'
+        },
+        body:JSON.stringify({
+          user_id:auth.user.id,
+          state:state,
+          updated_at:now
+        })
+      }
+    );
+
+    if(!res.ok){
+      let detail='';
+      try{
+        const data=await res.json();
+        detail=data?.message || data?.details || data?.hint || '';
+      }catch(_){}
+      
+      throw new Error(detail || `Backup failed (${res.status}).`);
+    }
+
+    localStorage.setItem('gymTrackerLastCloudBackup',now);
+    cachedCloudStateRow={state:JSON.parse(JSON.stringify(state)),updated_at:now};
+    cachedCloudStateAt=Date.now();
+    renderCloudBackupStatus();
+    cloudBackupMsg('Backup completed. Local Gym Tracker data was not changed.','good');
+  } catch(e) {
+    cloudBackupMsg(e.message || 'Backup failed.','error');
+  } finally {
+    if(button){button.disabled=false;button.textContent='Back up to cloud'}
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('cloudLogin')?.addEventListener('click',cloudSignIn);
+  document.getElementById('cloudLogout')?.addEventListener('click',cloudSignOut);
+  document.getElementById('cloudBackupNow')?.addEventListener('click',backupToCloud);
+  document.getElementById('cloudCheckNow')?.addEventListener('click',checkCloudBackup);
+  document.getElementById('cloudRestoreNow')?.addEventListener('click',restoreFromCloud);
+  document.getElementById('cloudRollbackNow')?.addEventListener('click',rollbackLastRestore);
+  document.getElementById('cloudCompareNow')?.addEventListener('click',compareLocalAndCloud);
+  document.getElementById('cloudSyncActionButton')?.addEventListener('click',applyRecommendedSyncAction);
+  document.getElementById('startupSyncButton')?.addEventListener('click',applyStartupSyncAction);
+  document.getElementById('startupSyncDismiss')?.addEventListener('click',()=>{
+    const b=document.getElementById('startupSyncBanner');
+    if(b)b.style.display='none';
+  });
+  document.getElementById('mobileCloudButton')?.addEventListener('click',()=>switchView('cloud'));
+  renderCloudAuth();
+  renderCloudBackupStatus();
+  renderCloudCheckStatus();
+  renderRestoreStatus();
+  renderSyncStatus('Checking…');
+  setTimeout(async()=>{
+    const ok=await ensureValidCloudSession();
+    if(ok) startupCompareLocalAndCloud();
+  },250);
+});
+</script>
+
+</body></html>

@@ -1,0 +1,14 @@
+Gym Tracker V5.9 — PWA-ready deployment package
+
+This build is based on the passed V5.8 Cloud/Sync checkpoint.
+
+To use on iPhone:
+1. Host this folder on an HTTPS static website.
+2. Open the URL in Safari on iPhone.
+3. Share > Add to Home Screen.
+4. Open from the Home Screen and sign in to Gym Tracker Cloud.
+
+Important:
+- Supabase authentication and sync remain online-only.
+- The app shell and exercise artwork are cached for offline opening.
+- Sync still requires user approval.
