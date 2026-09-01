@@ -596,7 +596,7 @@ main > header,
     <button class="navbtn" data-view="library">▤&nbsp;&nbsp;Library</button>
 <button class="navbtn" data-view="cloud">☁&nbsp;&nbsp;Cloud</button>
   </nav>
-  <div class="sidebar-foot">All data stored locally on this device.<br><br>v5.9-pwa-ready</div>
+  <div class="sidebar-foot">All data stored locally on this device.<br><br>v6.0-startup-timestamp-fix</div>
 </aside>
 <div class="app">
   <div id="workout" class="view active">
@@ -848,7 +848,7 @@ let libCategory='All';
 const key='darrenGymTrackerV1';
 const freshDefaults=()=>defaults.map(e=>({...e,baselineWeight:e.weight,baselineSets:e.sets,baselineReps:e.reps}));
 let state=JSON.parse(localStorage.getItem(key)||'null')||{exercises:freshDefaults(),visits:[],active:null,cardio:{bikeRetired:false,crossRetired:false}};
-if(!state._updatedAt){state._updatedAt=new Date().toISOString();localStorage.setItem(key,JSON.stringify(state));}
+/* Fresh/startup load deliberately does not create _updatedAt. */
 if(!state.exercises){
   state.exercises=freshDefaults();
 }else{
@@ -1717,6 +1717,13 @@ async function startupCompareLocalAndCloud() {
 
     const cloudTimeRaw=row.updated_at || remoteState?._updatedAt;
     const localTimeRaw=state?._updatedAt;
+
+    if(!localTimeRaw && cloudTimeRaw){
+      const cloudText=new Date(cloudTimeRaw).toLocaleString('en-AU');
+      showStartupSyncBanner('restore','Fresh device',cloudText);
+      renderSyncStatus('Cloud has existing data for this fresh device.');
+      return;
+    }
     if(!cloudTimeRaw || !localTimeRaw) return;
 
     const cloudMs=new Date(cloudTimeRaw).getTime();
@@ -1771,6 +1778,14 @@ async function compareLocalAndCloud() {
 
     const cloudTimeRaw=row.updated_at || remoteState?._updatedAt;
     const localTimeRaw=state?._updatedAt;
+
+    if(!localTimeRaw && cloudTimeRaw){
+      const cloudText=new Date(cloudTimeRaw).toLocaleString('en-AU');
+      renderSyncStatus('Cloud has existing data for this fresh device.');
+      cloudSyncMsg(`Cloud: ${cloudText}. This browser has no genuine local modification yet.`,'good');
+      renderSyncAction('restore','Fresh device',cloudText);
+      return;
+    }
     if(!cloudTimeRaw || !localTimeRaw) throw new Error('Could not determine both local and cloud timestamps.');
 
     const cloudMs=new Date(cloudTimeRaw).getTime();

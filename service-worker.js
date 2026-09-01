@@ -1,4 +1,4 @@
-const CACHE='gym-tracker-v5-9';
+const CACHE='gym-tracker-v6-0';
 const STATIC=["./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./assets/bike.jpg", "./assets/chest.jpg", "./assets/cross.jpg", "./assets/dbrow.jpg", "./assets/facepull.jpg", "./assets/foam.jpg", "./assets/glutebridge.jpg", "./assets/hinge.jpg", "./assets/hipabd.jpg", "./assets/hipext.jpg", "./assets/kneeext.jpg", "./assets/lat.jpg", "./assets/legcurl.jpg", "./assets/legpress.jpg", "./assets/pallof.jpg", "./assets/seatedrow.jpg", "./assets/shrug.jpg"];
 
 self.addEventListener('install', event => {

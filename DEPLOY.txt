@@ -1,4 +1,4 @@
-Gym Tracker V5.9 — PWA-ready deployment package
+Gym Tracker V6.0 — PWA-ready deployment package
 
 This build is based on the passed V5.8 Cloud/Sync checkpoint.
 
@@ -12,3 +12,5 @@ Important:
 - Supabase authentication and sync remain online-only.
 - The app shell and exercise artwork are cached for offline opening.
 - Sync still requires user approval.
+
+V6.0: startup/reload no longer creates a local modification timestamp.
