@@ -635,6 +635,33 @@ main > header,
 .about-row span{color:#667085}.about-row strong{text-align:right;color:#111827}
 </style>
 
+
+<style id="v631-mobile-nav-polish">
+@media(max-width:759px){
+  .tabs{
+    gap:6px!important;
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom))!important;
+    background:rgba(255,255,255,.97)!important;
+  }
+  .tabs .tab{
+    min-height:46px!important;
+    padding:8px 3px!important;
+    border:1px solid #e2e8f0!important;
+    border-radius:13px!important;
+    background:#f8fafc!important;
+    color:#475569!important;
+    font-weight:800!important;
+    font-size:11px!important;
+    line-height:1.15!important;
+  }
+  .tabs .tab.active{
+    background:#111827!important;
+    border-color:#111827!important;
+    color:#fff!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -811,8 +838,8 @@ main > header,
     <div class="about-card">
       <h2>Darren's Gym Tracker</h2>
       <p>Personal gym program, visit and progression tracker.</p>
-      <div class="about-row"><span>Version</span><strong>V6.3</strong></div>
-      <div class="about-row"><span>Build</span><strong>About page</strong></div>
+      <div class="about-row"><span>Version</span><strong>V6.3.1</strong></div>
+      <div class="about-row"><span>Build</span><strong>Mobile UI + cloud polish</strong></div>
       <div class="about-row"><span>Data</span><strong>Local-first + Supabase cloud sync</strong></div>
     </div>
   </div>
@@ -972,7 +999,7 @@ if(!state.exercises){
 if(!state.cardio)state.cardio={bikeRetired:false,crossRetired:false};
 if(!state.cardio.bike)state.cardio.bike={duration:10,level:5,program:'Intervals'};
 if(!state.cardio.cross)state.cardio.cross={duration:10,level:5,program:'Rolling hills'};
-const stateBuildVersion='6.3-about';
+const stateBuildVersion='6.3.1-mobile-cloud-polish';
 const buildKey='darrenGymTrackerBuild';
 if(localStorage.getItem(buildKey)!==stateBuildVersion){
   // Keep program edits and saved visits, but never inherit an unfinished test session across builds.
@@ -1514,6 +1541,8 @@ async function cloudSignIn() {
     setAuth(data);
     cloudMsg('Signed in.','good');
     setCloudAuthUi('connected',data);
+    renderSyncStatus('Checking…');
+    await compareLocalAndCloud();
   } catch(e) {
     cloudMsg(e.message || 'Sign in failed.','error');
   }
@@ -1816,9 +1845,12 @@ function renderSyncAction(kind, localText='', cloudText='') {
     text.textContent=`Local ${localText} is newer than cloud ${cloudText}.`;
     button.textContent='Upload newer local copy';
   }else if(kind==='restore'){
-    title.textContent='Recommended: restore newer cloud copy';
-    text.textContent=`Cloud ${cloudText} is newer than local ${localText}.`;
-    button.textContent='Restore newer cloud copy';
+    const freshInstall = localText==='New installation';
+    title.textContent=freshInstall ? 'Recommended: restore your cloud data' : 'Recommended: restore newer cloud copy';
+    text.textContent=freshInstall
+      ? `Cloud backup ${cloudText} is available for this new installation.`
+      : `Cloud ${cloudText} is newer than local ${localText}.`;
+    button.textContent=freshInstall ? 'Restore cloud data' : 'Restore newer cloud copy';
   }else{
     title.textContent='Local and cloud are already in sync';
     text.textContent='No action is required.';
@@ -1894,8 +1926,8 @@ async function startupCompareLocalAndCloud() {
 
     if(!localTimeRaw && cloudTimeRaw){
       const cloudText=new Date(cloudTimeRaw).toLocaleString('en-AU');
-      showStartupSyncBanner('restore','Fresh device',cloudText);
-      renderSyncStatus('Cloud has existing data for this fresh device.');
+      showStartupSyncBanner('restore','New installation',cloudText);
+      renderSyncStatus('This is a new installation with no local changes yet.');
       return;
     }
     if(!cloudTimeRaw || !localTimeRaw) return;
@@ -1955,9 +1987,9 @@ async function compareLocalAndCloud() {
 
     if(!localTimeRaw && cloudTimeRaw){
       const cloudText=new Date(cloudTimeRaw).toLocaleString('en-AU');
-      renderSyncStatus('Cloud has existing data for this fresh device.');
-      cloudSyncMsg(`Cloud: ${cloudText}. This browser has no genuine local modification yet.`,'good');
-      renderSyncAction('restore','Fresh device',cloudText);
+      renderSyncStatus('This is a new installation with no local changes yet.');
+      cloudSyncMsg(`Cloud: ${cloudText}. This new installation has no local changes yet.`,'good');
+      renderSyncAction('restore','New installation',cloudText);
       return;
     }
     if(!cloudTimeRaw || !localTimeRaw) throw new Error('Could not determine both local and cloud timestamps.');

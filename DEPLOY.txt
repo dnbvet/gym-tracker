@@ -24,3 +24,5 @@ V6.2.1: fixed build migration so unfinished sessions from prior builds are clear
 V6.2.2: added Cancel visit with confirmation; discards only the active visit and does not create a visit record or revert saved exercise/cardio defaults.
 
 V6.3: added About page to mobile More menu and desktop navigation; moved visible version/build information into About.
+
+V6.3.1: polished mobile bottom navigation, clarified fresh-install cloud wording, and fixed automatic post-sign-in cloud comparison.
