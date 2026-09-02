@@ -26,3 +26,5 @@ V6.2.2: added Cancel visit with confirmation; discards only the active visit and
 V6.3: added About page to mobile More menu and desktop navigation; moved visible version/build information into About.
 
 V6.3.1: polished mobile bottom navigation, clarified fresh-install cloud wording, and fixed automatic post-sign-in cloud comparison.
+
+V6.3.2: refined mobile bottom navigation pill dimensions, spacing, padding, alignment and typography; increased inactive pill border thickness to 1.5px.
