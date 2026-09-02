@@ -1,4 +1,4 @@
-Gym Tracker V6.0 — PWA-ready deployment package
+Gym Tracker V6.1 — PWA-ready deployment package
 
 This build is based on the passed V5.8 Cloud/Sync checkpoint.
 
@@ -14,3 +14,5 @@ Important:
 - Sync still requires user approval.
 
 V6.0: startup/reload no longer creates a local modification timestamp.
+
+V6.1: mobile navigation uses More for Library and Cloud; floating Cloud shortcut removed.

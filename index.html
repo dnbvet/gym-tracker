@@ -575,6 +575,28 @@ main > header,
 .pwa-ready-note span{display:block;color:#667085;font-size:12px;line-height:1.45}
 </style>
 
+
+<style id="v61-mobile-more">
+/* V6.1: secondary mobile destinations live under More; no floating Cloud button. */
+@media(max-width:759px){
+  .tabs{grid-template-columns:repeat(5,1fr)!important}
+  .tabs .tab{min-width:0;padding-left:4px!important;padding-right:4px!important;font-size:11px!important}
+  .mobile-cloud-button{display:none!important}
+  .mobile-more-menu{
+    display:none;position:fixed;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));
+    z-index:120;min-width:180px;padding:7px;background:#fff;border:1px solid #d7dee8;
+    border-radius:14px;box-shadow:0 12px 32px rgba(15,23,42,.18)
+  }
+  .mobile-more-menu.show{display:block}
+  .mobile-more-menu button{
+    display:block;width:100%;border:0;background:#fff;text-align:left;padding:12px 13px;
+    border-radius:10px;font-weight:750;color:#1f2937
+  }
+  .mobile-more-menu button:active{background:#eef3f8}
+}
+@media(min-width:760px){.mobile-more-menu{display:none!important}}
+</style>
+
 </head>
 <body>
 
@@ -596,7 +618,7 @@ main > header,
     <button class="navbtn" data-view="library">▤&nbsp;&nbsp;Library</button>
 <button class="navbtn" data-view="cloud">☁&nbsp;&nbsp;Cloud</button>
   </nav>
-  <div class="sidebar-foot">All data stored locally on this device.<br><br>v6.0-startup-timestamp-fix</div>
+  <div class="sidebar-foot">All data stored locally on this device.<br><br>v6.1-mobile-more</div>
 </aside>
 <div class="app">
   <div id="workout" class="view active">
@@ -741,12 +763,16 @@ main > header,
 
 </div>
 
-<button id="mobileCloudButton" class="mobile-cloud-button" aria-label="Cloud">☁</button>
 <div class="tabs">
   <button class="tab active" data-view="workout">▣&nbsp;&nbsp;Today</button>
   <button class="tab" data-view="visits">▦&nbsp;&nbsp;Visits</button>
   <button class="tab" data-view="progress">⌁&nbsp;&nbsp;Progress</button>
   <button class="tab" data-view="manage">⚙&nbsp;&nbsp;Exercises</button>
+  <button class="tab more-tab" id="mobileMoreButton" type="button">•••&nbsp;&nbsp;More</button>
+</div>
+<div id="mobileMoreMenu" class="mobile-more-menu" aria-hidden="true">
+  <button type="button" data-more-view="library">▤&nbsp;&nbsp;Library</button>
+  <button type="button" data-more-view="cloud">☁&nbsp;&nbsp;Cloud</button>
 </div>
 
 
@@ -1191,6 +1217,28 @@ document.getElementById('resetTestData').onclick=resetTestData;
 document.getElementById('startBtn').onclick=startVisit;document.getElementById('endBtn').onclick=endVisit;document.getElementById('cancelEdit').onclick=closeEdit;document.getElementById('saveEdit').onclick=saveEdit;document.getElementById('modalBackdrop').onclick=e=>{if(e.target.id==='modalBackdrop')closeEdit()};document.getElementById('exerciseSelect').onchange=renderProgressDetail;document.getElementById('addExercise').onclick=()=>openManage();document.getElementById('libAdd').onclick=()=>openManage();document.getElementById('libSearch').oninput=renderLibrary;document.getElementById('activeSeg').onclick=()=>{manageMode='active';renderManage()};document.getElementById('retiredSeg').onclick=()=>{manageMode='retired';renderManage()};document.getElementById('cancelManage').onclick=closeManage;document.getElementById('saveManage').onclick=saveManage;document.getElementById('manageModal').onclick=e=>{if(e.target.id==='manageModal')closeManage()};
 function switchView(name){document.querySelectorAll('.tab,.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.view===name));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===name));if(name==='progress')setTimeout(renderProgressDetail,10);if(name==='manage')renderManage();if(name==='library')renderLibrary(); if(name==='cloud')renderCloudAuth();}
 document.querySelectorAll('.tab,.navbtn').forEach(t=>t.onclick=()=>switchView(t.dataset.view));
+const mobileMoreButton=document.getElementById('mobileMoreButton');
+const mobileMoreMenu=document.getElementById('mobileMoreMenu');
+function closeMobileMore(){
+  mobileMoreMenu?.classList.remove('show');
+  mobileMoreMenu?.setAttribute('aria-hidden','true');
+}
+mobileMoreButton?.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  const opening=!mobileMoreMenu?.classList.contains('show');
+  mobileMoreMenu?.classList.toggle('show',opening);
+  mobileMoreMenu?.setAttribute('aria-hidden',opening?'false':'true');
+});
+mobileMoreMenu?.querySelectorAll('[data-more-view]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    switchView(btn.dataset.moreView);
+    closeMobileMore();
+  });
+});
+document.addEventListener('click',(e)=>{
+  if(mobileMoreMenu?.classList.contains('show') && !mobileMoreMenu.contains(e.target) && e.target!==mobileMoreButton) closeMobileMore();
+});
+
 renderAll();
 
 const APPROVED_ARTWORK = {
@@ -1887,7 +1935,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     const b=document.getElementById('startupSyncBanner');
     if(b)b.style.display='none';
   });
-  document.getElementById('mobileCloudButton')?.addEventListener('click',()=>switchView('cloud'));
   renderCloudAuth();
   renderCloudBackupStatus();
   renderCloudCheckStatus();
