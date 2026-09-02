@@ -625,6 +625,16 @@ main > header,
 }
 </style>
 
+
+<style id="v63-about">
+#about{max-width:900px;margin:0 auto}
+.about-card{max-width:560px;background:#fff;border:1px solid rgba(15,26,45,.09);border-radius:18px;padding:20px;box-shadow:0 2px 8px rgba(15,26,45,.05)}
+.about-card h2{margin:0 0 6px;font-size:21px}
+.about-card p{margin:0 0 18px;color:#667085;font-size:13px}
+.about-row{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-top:1px solid #edf1f5;font-size:13px}
+.about-row span{color:#667085}.about-row strong{text-align:right;color:#111827}
+</style>
+
 </head>
 <body>
 
@@ -645,8 +655,9 @@ main > header,
     <button class="navbtn" data-view="manage">⚙&nbsp;&nbsp;Exercises</button>
     <button class="navbtn" data-view="library">▤&nbsp;&nbsp;Library</button>
 <button class="navbtn" data-view="cloud">☁&nbsp;&nbsp;Cloud</button>
+<button class="navbtn" data-view="about">ⓘ&nbsp;&nbsp;About</button>
   </nav>
-  <div class="sidebar-foot">All data stored locally on this device.<br><br>v6.2.2-cancel-visit</div>
+  <div class="sidebar-foot">All data stored locally on this device.</div>
 </aside>
 <div class="app">
   <div id="workout" class="view active">
@@ -792,6 +803,20 @@ main > header,
     </div>
   </div>
 
+
+  <div id="about" class="view">
+    <div class="topbar">
+      <div class="title"><div><h1>About</h1><div class="date">Gym Tracker information</div></div></div>
+    </div>
+    <div class="about-card">
+      <h2>Darren's Gym Tracker</h2>
+      <p>Personal gym program, visit and progression tracker.</p>
+      <div class="about-row"><span>Version</span><strong>V6.3</strong></div>
+      <div class="about-row"><span>Build</span><strong>About page</strong></div>
+      <div class="about-row"><span>Data</span><strong>Local-first + Supabase cloud sync</strong></div>
+    </div>
+  </div>
+
 </div>
 
 <div class="tabs">
@@ -804,6 +829,7 @@ main > header,
 <div id="mobileMoreMenu" class="mobile-more-menu" aria-hidden="true">
   <button type="button" data-more-view="library">▤&nbsp;&nbsp;Library</button>
   <button type="button" data-more-view="cloud">☁&nbsp;&nbsp;Cloud</button>
+  <button type="button" data-more-view="about">ⓘ&nbsp;&nbsp;About</button>
 </div>
 
 
@@ -946,7 +972,7 @@ if(!state.exercises){
 if(!state.cardio)state.cardio={bikeRetired:false,crossRetired:false};
 if(!state.cardio.bike)state.cardio.bike={duration:10,level:5,program:'Intervals'};
 if(!state.cardio.cross)state.cardio.cross={duration:10,level:5,program:'Rolling hills'};
-const stateBuildVersion='6.2.2-cancel-visit';
+const stateBuildVersion='6.3-about';
 const buildKey='darrenGymTrackerBuild';
 if(localStorage.getItem(buildKey)!==stateBuildVersion){
   // Keep program edits and saved visits, but never inherit an unfinished test session across builds.

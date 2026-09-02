@@ -1,4 +1,4 @@
-Gym Tracker V6.2.2 — PWA-ready deployment package
+Gym Tracker V6.3 — PWA-ready deployment package
 
 This build is based on the passed V5.8 Cloud/Sync checkpoint.
 
@@ -22,3 +22,5 @@ V6.2: bike/cross-trainer time, level and program editable during a visit; comple
 V6.2.1: fixed build migration so unfinished sessions from prior builds are cleared without altering exercises, visits, cardio defaults or cloud data.
 
 V6.2.2: added Cancel visit with confirmation; discards only the active visit and does not create a visit record or revert saved exercise/cardio defaults.
+
+V6.3: added About page to mobile More menu and desktop navigation; moved visible version/build information into About.
