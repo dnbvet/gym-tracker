@@ -597,6 +597,34 @@ main > header,
 @media(min-width:760px){.mobile-more-menu{display:none!important}}
 </style>
 
+
+<style id="v62-cardio-and-cloud-pill">
+#cloudChip{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  text-align:center!important;white-space:nowrap!important;line-height:1.1!important;
+  min-height:34px;
+}
+@media(max-width:520px){
+  #cloudChip{font-size:12px!important;padding:7px 9px!important;flex:0 0 auto!important}
+  #cloud .title{align-items:center!important}
+}
+</style>
+
+
+<style id="v622-cancel-visit">
+.visit-actions{display:flex;gap:10px;align-items:stretch;margin-top:14px}
+.visit-actions .endbtn{display:block!important;flex:1;margin:0!important}
+.cancel-visit-btn{
+  border:1px solid #d1d5db;background:#fff;color:#475569;border-radius:12px;
+  padding:11px 14px;font-weight:750;cursor:pointer
+}
+.cancel-visit-btn:hover{background:#f8fafc}
+@media(max-width:520px){
+  .visit-actions{gap:8px}
+  .cancel-visit-btn{padding:10px 11px;font-size:13px}
+}
+</style>
+
 </head>
 <body>
 
@@ -618,7 +646,7 @@ main > header,
     <button class="navbtn" data-view="library">▤&nbsp;&nbsp;Library</button>
 <button class="navbtn" data-view="cloud">☁&nbsp;&nbsp;Cloud</button>
   </nav>
-  <div class="sidebar-foot">All data stored locally on this device.<br><br>v6.1-mobile-more</div>
+  <div class="sidebar-foot">All data stored locally on this device.<br><br>v6.2.2-cancel-visit</div>
 </aside>
 <div class="app">
   <div id="workout" class="view active">
@@ -634,7 +662,10 @@ main > header,
     <div id="strength"></div>
     <div class="section-title"><h2>Finish</h2><span>usual finish</span></div>
     <div id="finish"></div>
-    <button id="endBtn" class="endbtn" style="display:none">Finish & save visit</button>
+    <div id="visitActions" class="visit-actions" style="display:none">
+      <button id="cancelVisitBtn" class="cancel-visit-btn">Cancel visit</button>
+      <button id="endBtn" class="endbtn">Finish &amp; save visit</button>
+    </div>
   </div>
 
   <div id="visits" class="view">
@@ -789,6 +820,22 @@ main > header,
   </div>
 </div>
 
+<div id="cardioEditModal" class="modal-backdrop">
+  <div class="modal">
+    <h3 id="cardioEditTitle">Edit cardio</h3>
+    <div class="grid3">
+      <div class="field"><label>Time (min)</label><input id="cardioDurationInput" inputmode="numeric" /></div>
+      <div class="field"><label>Level</label><input id="cardioLevelInput" inputmode="numeric" /></div>
+      <div class="field"><label>Program</label><input id="cardioProgramInput" /></div>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" id="cancelCardioEdit">Cancel</button>
+      <button class="save" id="saveCardioEdit">Save change</button>
+    </div>
+    <div class="note">Changes become the new default for future visits. The completed cardio settings are saved with each visit.</div>
+  </div>
+</div>
+
 <div id="manageModal" class="modal-backdrop"><div class="modal"><h3 id="manageTitle">Add exercise</h3>
 <div class="widefield"><label>Exercise name</label><input id="nameInput"></div>
 <div class="grid3" style="margin-top:10px"><div class="field"><label>Weight (kg)</label><input id="mWeight" inputmode="decimal"></div><div class="field"><label>Sets</label><input id="mSets" inputmode="numeric"></div><div class="field"><label>Reps</label><input id="mReps" inputmode="numeric"></div></div>
@@ -850,6 +897,12 @@ const defaults=[
  {id:'seatedrow',name:'Seated row',sets:3,reps:10,weight:35,icon:'seatedrow',pic:'seatedrow',badge:'self-added'}
 ];
 const cardio={warmup:{id:'bike',name:'Exercise bike',duration:10,detail:'Level 5 · Intervals',icon:'bike',pic:'bike'},finish:{id:'cross',name:'Cross trainer',duration:10,detail:'Level 5 · Rolling hills',icon:'cross',pic:'cross'}};
+function cardioCurrent(id){
+ const base=id==='bike'?cardio.warmup:cardio.finish;
+ const prefs=id==='bike'?state.cardio.bike:state.cardio.cross;
+ return {...base,duration:prefs.duration,level:prefs.level,program:prefs.program,detail:`Level ${prefs.level} · ${prefs.program}`};
+}
+
 
 const exerciseLibrary=[
  ['bike','Exercise bike','Cardio'],
@@ -891,12 +944,14 @@ if(!state.exercises){
   });
 }
 if(!state.cardio)state.cardio={bikeRetired:false,crossRetired:false};
-const buildVersion='3.22';
+if(!state.cardio.bike)state.cardio.bike={duration:10,level:5,program:'Intervals'};
+if(!state.cardio.cross)state.cardio.cross={duration:10,level:5,program:'Rolling hills'};
+const stateBuildVersion='6.2.2-cancel-visit';
 const buildKey='darrenGymTrackerBuild';
-if(localStorage.getItem(buildKey)!==buildVersion){
+if(localStorage.getItem(buildKey)!==stateBuildVersion){
   // Keep program edits and saved visits, but never inherit an unfinished test session across builds.
   state.active=null;
-  localStorage.setItem(buildKey,buildVersion);
+  localStorage.setItem(buildKey,stateBuildVersion);
   localStorage.setItem(key,JSON.stringify(state));
 }
 let editing=null;
@@ -914,8 +969,9 @@ function startVisit(){
  if(state.active)return;
  state.active={startedAt:new Date().toISOString(),done:{},snapshot:{}};
  state.exercises.forEach(e=>state.active.snapshot[e.id]={sets:e.sets,reps:e.reps,weight:e.weight,duration:e.duration});
- state.active.snapshot.bike={duration:cardio.warmup.duration,detail:cardio.warmup.detail};
- state.active.snapshot.cross={duration:cardio.finish.duration,detail:cardio.finish.detail};
+ const bike=cardioCurrent('bike'),cross=cardioCurrent('cross');
+ state.active.snapshot.bike={duration:bike.duration,level:bike.level,program:bike.program,detail:bike.detail};
+ state.active.snapshot.cross={duration:cross.duration,level:cross.level,program:cross.program,detail:cross.detail};
  save();renderAll();
 }
 let recentlyCompleted=null,doneMoveTimer=null;
@@ -932,6 +988,15 @@ function toggleDone(id){
    recentlyCompleted=null;
    save();renderWorkout();
  },650);
+}
+function cancelVisit(){
+ if(!state.active)return;
+ if(!confirm("Cancel this visit? Completed exercises from this visit won't be saved."))return;
+ clearTimeout(doneMoveTimer);
+ recentlyCompleted=null;
+ state.active=null;
+ save();
+ renderAll();
 }
 function endVisit(){if(!state.active)return; const completed=Object.entries(state.active.done).filter(([,v])=>v).map(([k])=>k); if(!completed.length&&!confirm('Save this visit with no completed items?'))return; state.visits.unshift({id:Date.now(),startedAt:state.active.startedAt,endedAt:new Date().toISOString(),done:completed,snapshot:state.active.snapshot}); state.active=null; save(); renderAll();}
 function cardHTML(e){
@@ -950,12 +1015,12 @@ function cardioHTML(e){
  return `<div class="card special ${just?'justdone':done?'done':''}">
  <div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}</div>
  <div class="sub">${e.duration} min · ${e.detail}</div><div class="last">${lastText(e.id)}</div></div>
- <div class="actions"><button class="donebtn ${done||just?'done':''}" data-done="${e.id}" ${just?'disabled':''}>${done||just?'✓ Done':'Done'}</button></div></div>`;
+ <div class="actions"><button class="editbtn" data-cardio-edit="${e.id}">Edit</button><button class="donebtn ${done||just?'done':''}" data-done="${e.id}" ${just?'disabled':''}>${done||just?'✓ Done':'Done'}</button></div></div>`;
 }
-function lastText(id){const v=state.visits.find(v=>v.done.includes(id)); if(!v)return 'No previous visit logged'; if(id==='bike'||id==='cross')return `Last done ${fmtDate(v.startedAt)}`; const s=v.snapshot[id]; if(!s)return `Last done ${fmtDate(v.startedAt)}`; if(s.duration)return `Last: ${s.duration} min · ${fmtDate(v.startedAt)}`; return `Last: ${s.weight} kg · ${s.sets} × ${s.reps} · ${fmtDate(v.startedAt)}`}
+function lastText(id){const v=state.visits.find(v=>v.done.includes(id)); if(!v)return 'No previous visit logged'; if(id==='bike'||id==='cross'){const s=v.snapshot?.[id];return s?`Last: ${s.duration} min · Level ${s.level??'?'}${s.program?` · ${s.program}`:''} · ${fmtDate(v.startedAt)}`:`Last done ${fmtDate(v.startedAt)}`;} const s=v.snapshot[id]; if(!s)return `Last done ${fmtDate(v.startedAt)}`; if(s.duration)return `Last: ${s.duration} min · ${fmtDate(v.startedAt)}`; return `Last: ${s.weight} kg · ${s.sets} × ${s.reps} · ${fmtDate(v.startedAt)}`}
 function renderWorkout(){
  document.getElementById('startBox').style.display=state.active?'none':'block';
- document.getElementById('endBtn').style.display=state.active?'block':'none';
+ document.getElementById('visitActions').style.display=state.active?'flex':'none';
  document.getElementById('sessionBadge').textContent=state.active?`Started ${fmtTime(state.active.startedAt)}`:'No active visit';
  const activeExercises=state.exercises.filter(e=>!e.retired);
  const score=e=>(state.active&&state.active.done[e.id]&&e.id!==recentlyCompleted)?1:0;
@@ -963,9 +1028,10 @@ function renderWorkout(){
  const bikeActive=!state.cardio.bikeRetired,crossActive=!state.cardio.crossRetired;
  const foam=sorted.find(e=>e.id==='foam');
  const strengthOnly=sorted.filter(e=>e.id!=='foam');
- document.getElementById('warmup').innerHTML=(bikeActive?cardioHTML(cardio.warmup):'')+(foam?cardHTML(foam):'');
+ const bike=cardioCurrent('bike'),cross=cardioCurrent('cross');
+ document.getElementById('warmup').innerHTML=(bikeActive?cardioHTML(bike):'')+(foam?cardHTML(foam):'');
  document.getElementById('strength').innerHTML=strengthOnly.map(cardHTML).join('');
- document.getElementById('finish').innerHTML=crossActive?cardioHTML(cardio.finish):'';
+ document.getElementById('finish').innerHTML=crossActive?cardioHTML(cross):'';
  const strengthDone=state.active?activeExercises.filter(e=>state.active.done[e.id]).length:0;
  const cardioDone=state.active?Number(!!(bikeActive&&state.active.done.bike))+Number(!!(crossActive&&state.active.done.cross)):0;
  const doneCount=strengthDone+cardioDone;
@@ -975,6 +1041,35 @@ function renderWorkout(){
  document.getElementById('bar').style.width=`${total?Math.round(doneCount/total*100):0}%`;
  document.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>toggleDone(b.dataset.done));
  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
+ document.querySelectorAll('[data-cardio-edit]').forEach(b=>b.onclick=()=>openCardioEdit(b.dataset.cardioEdit));
+}
+let editingCardio=null;
+function openCardioEdit(id){
+ if(!state.active){alert('Start a gym visit first.');return}
+ const e=cardioCurrent(id);
+ editingCardio=id;
+ document.getElementById('cardioEditTitle').textContent=`Edit ${e.name}`;
+ document.getElementById('cardioDurationInput').value=e.duration;
+ document.getElementById('cardioLevelInput').value=e.level;
+ document.getElementById('cardioProgramInput').value=e.program;
+ document.getElementById('cardioEditModal').classList.add('show');
+}
+function closeCardioEdit(){
+ document.getElementById('cardioEditModal').classList.remove('show');
+ editingCardio=null;
+}
+function saveCardioEdit(){
+ if(!editingCardio||!state.active)return;
+ const duration=parseInt(document.getElementById('cardioDurationInput').value);
+ const level=parseInt(document.getElementById('cardioLevelInput').value);
+ const program=document.getElementById('cardioProgramInput').value.trim();
+ if(!Number.isFinite(duration)||duration<=0||!Number.isFinite(level)||level<0||!program){
+   alert('Please enter time, level and program.');return;
+ }
+ const target=editingCardio==='bike'?state.cardio.bike:state.cardio.cross;
+ target.duration=duration;target.level=level;target.program=program;
+ state.active.snapshot[editingCardio]={duration,level,program,detail:`Level ${level} · ${program}`};
+ save();closeCardioEdit();renderAll();
 }
 function openEdit(id){if(!state.active){alert('Start a gym visit first.');return} editing=id; const e=state.exercises.find(x=>x.id===id); document.getElementById('modalTitle').textContent=e.name; document.getElementById('weightInput').value=e.weight??'';document.getElementById('setsInput').value=e.sets??'';document.getElementById('repsInput').value=e.reps??'';document.getElementById('modalBackdrop').classList.add('show');}
 function saveEdit(){const e=state.exercises.find(x=>x.id===editing); if(!e)return; const w=parseFloat(document.getElementById('weightInput').value),s=parseInt(document.getElementById('setsInput').value),r=parseInt(document.getElementById('repsInput').value); if(Number.isNaN(w)||Number.isNaN(s)||Number.isNaN(r)){alert('Please enter weight, sets and reps.');return} e.weight=w;e.sets=s;e.reps=r; state.active.snapshot[e.id]={weight:w,sets:s,reps:r}; save();closeEdit();renderAll();}
@@ -1000,7 +1095,9 @@ function renderVisits(){
  if(!state.visits.length){el.innerHTML='<div class="empty">No visits logged yet.</div>';return}
  el.innerHTML=state.visits.map(v=>{
    const completed=v.done.map(id=>{
-     const name=id==='bike'?cardio.warmup.name:id==='cross'?cardio.finish.name:(state.exercises.find(e=>e.id===id)?.name||id);
+     const baseName=id==='bike'?cardio.warmup.name:id==='cross'?cardio.finish.name:(state.exercises.find(e=>e.id===id)?.name||id);
+     const cs=(id==='bike'||id==='cross')?v.snapshot?.[id]:null;
+     const name=cs?`${baseName} · ${cs.duration} min · Level ${cs.level??'?'}${cs.program?` · ${cs.program}`:''}`:baseName;
      return {id,name,category:categoryForExercise(id)};
    });
    const counts={};
@@ -1207,14 +1304,17 @@ function renderAll(){renderWorkout();renderVisits();renderProgress();renderManag
 
 function resetTestData(){
  if(!confirm('Clear all test visits and restore the original starting weights, sets and reps?'))return;
- state={exercises:freshDefaults(),visits:[],active:null,cardio:{bikeRetired:false,crossRetired:false}};
+ state={exercises:freshDefaults(),visits:[],active:null,cardio:{bikeRetired:false,crossRetired:false,bike:{duration:10,level:5,program:'Intervals'},cross:{duration:10,level:5,program:'Rolling hills'}}};
  recentlyCompleted=null;
  save();
  switchView('workout');
  setTimeout(()=>renderAll(),0);
 }
 document.getElementById('resetTestData').onclick=resetTestData;
-document.getElementById('startBtn').onclick=startVisit;document.getElementById('endBtn').onclick=endVisit;document.getElementById('cancelEdit').onclick=closeEdit;document.getElementById('saveEdit').onclick=saveEdit;document.getElementById('modalBackdrop').onclick=e=>{if(e.target.id==='modalBackdrop')closeEdit()};document.getElementById('exerciseSelect').onchange=renderProgressDetail;document.getElementById('addExercise').onclick=()=>openManage();document.getElementById('libAdd').onclick=()=>openManage();document.getElementById('libSearch').oninput=renderLibrary;document.getElementById('activeSeg').onclick=()=>{manageMode='active';renderManage()};document.getElementById('retiredSeg').onclick=()=>{manageMode='retired';renderManage()};document.getElementById('cancelManage').onclick=closeManage;document.getElementById('saveManage').onclick=saveManage;document.getElementById('manageModal').onclick=e=>{if(e.target.id==='manageModal')closeManage()};
+document.getElementById('cancelCardioEdit').onclick=closeCardioEdit;
+document.getElementById('saveCardioEdit').onclick=saveCardioEdit;
+document.getElementById('cardioEditModal').onclick=e=>{if(e.target.id==='cardioEditModal')closeCardioEdit()};
+document.getElementById('startBtn').onclick=startVisit;document.getElementById('cancelVisitBtn').onclick=cancelVisit;document.getElementById('endBtn').onclick=endVisit;document.getElementById('cancelEdit').onclick=closeEdit;document.getElementById('saveEdit').onclick=saveEdit;document.getElementById('modalBackdrop').onclick=e=>{if(e.target.id==='modalBackdrop')closeEdit()};document.getElementById('exerciseSelect').onchange=renderProgressDetail;document.getElementById('addExercise').onclick=()=>openManage();document.getElementById('libAdd').onclick=()=>openManage();document.getElementById('libSearch').oninput=renderLibrary;document.getElementById('activeSeg').onclick=()=>{manageMode='active';renderManage()};document.getElementById('retiredSeg').onclick=()=>{manageMode='retired';renderManage()};document.getElementById('cancelManage').onclick=closeManage;document.getElementById('saveManage').onclick=saveManage;document.getElementById('manageModal').onclick=e=>{if(e.target.id==='manageModal')closeManage()};
 function switchView(name){document.querySelectorAll('.tab,.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.view===name));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===name));if(name==='progress')setTimeout(renderProgressDetail,10);if(name==='manage')renderManage();if(name==='library')renderLibrary(); if(name==='cloud')renderCloudAuth();}
 document.querySelectorAll('.tab,.navbtn').forEach(t=>t.onclick=()=>switchView(t.dataset.view));
 const mobileMoreButton=document.getElementById('mobileMoreButton');
