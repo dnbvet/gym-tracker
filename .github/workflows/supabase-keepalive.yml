@@ -10,8 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Supabase database
+      - name: Check Supabase credentials
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          curl --fail --silent --show-error \
-            "${{ secrets.SUPABASE_URL }}/rest/v1/gym_tracker_state?select=*&limit=1" \
-            -H "apikey: ${{ secrets.SUPABASE_KEY }}"
+          if [[ "$SUPABASE_KEY" != sb_secret_* ]]; then
+            echo "ERROR: SUPABASE_KEY is not an sb_secret_ key"
+            exit 1
+          fi
+
+          echo "Secret key format: OK"
+
+          status=$(curl --silent --show-error \
+            -o response.txt \
+            -w "%{http_code}" \
+            "$SUPABASE_URL/rest/v1/" \
+            -H "apikey: $SUPABASE_KEY")
+
+          echo "Supabase HTTP status: $status"
+
+          if [[ "$status" != "200" ]]; then
+            echo "Supabase response:"
+            cat response.txt
+            exit 1
+          fi
+
+          echo "Supabase authentication: OK"
