@@ -10,20 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Supabase credentials
+      - name: Keep Supabase active
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          if [[ "$SUPABASE_KEY" != sb_secret_* ]]; then
-            echo "ERROR: SUPABASE_KEY is not an sb_secret_ key"
-            exit 1
-          fi
-
-          echo "Secret key format: OK"
-
           status=$(curl --silent --show-error \
-            -o response.txt \
+            -o /dev/null \
             -w "%{http_code}" \
             "$SUPABASE_URL/rest/v1/" \
             -H "apikey: $SUPABASE_KEY")
@@ -31,9 +24,8 @@ jobs:
           echo "Supabase HTTP status: $status"
 
           if [[ "$status" != "200" ]]; then
-            echo "Supabase response:"
-            cat response.txt
+            echo "Supabase keepalive failed"
             exit 1
           fi
 
-          echo "Supabase authentication: OK"
+          echo "Supabase keepalive successful"
