@@ -367,6 +367,66 @@ main > header,
 #library .libcard .use{margin-top:8px;padding:9px 8px;border-radius:10px;font-size:13px}
 #library .libcard .use:disabled{background:#eef2f7!important;color:#64748b!important;opacity:1!important;border:1px solid #dbe3ec}
 @media(max-width:900px){#library .library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* V6.5 workout action hierarchy + grouped library */
+.actions{align-items:center}
+.donebtn{
+  min-width:100px!important;
+  padding:15px 16px!important;
+  border-radius:13px!important;
+  font-size:15px!important;
+  font-weight:850!important;
+}
+.editbtn{
+  align-self:center!important;
+  width:auto!important;
+  min-width:52px!important;
+  padding:5px 10px!important;
+  border:1px solid #d7dee8!important;
+  background:#f8fafc!important;
+  color:#64748b!important;
+  border-radius:999px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+}
+.library-section-title{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:10px 2px 0;
+  padding:7px 2px 4px;
+  border-bottom:1px solid #e5e7eb;
+  font-size:14px;
+  font-weight:850;
+  color:#1f2937;
+}
+.library-section-title:first-child{margin-top:2px}
+.library-section-count{
+  font-size:11px;
+  font-weight:700;
+  color:#64748b;
+}
+.library-empty{
+  grid-column:1/-1;
+  padding:12px 2px;
+  color:#64748b;
+  font-size:13px;
+}
+@media(max-width:520px){
+  .donebtn{
+    min-width:92px!important;
+    padding:15px 12px!important;
+    font-size:15px!important;
+  }
+  .editbtn{
+    min-width:48px!important;
+    padding:4px 9px!important;
+    font-size:10px!important;
+  }
+}
+
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -885,7 +945,7 @@ main > header,
     <div class="about-card">
       <h2>Darren's Gym Tracker</h2>
       <p>Personal gym program, visit and progression tracker.</p>
-      <div class="about-row"><span>Version</span><strong>V6.4.1</strong></div>
+      <div class="about-row"><span>Version</span><strong>V6.5</strong></div>
       <div class="about-row"><span>Build</span><strong>Session safety + new exercises</strong></div>
       <div class="about-row"><span>Data</span><strong>Local-first + Supabase cloud sync</strong></div>
     </div>
@@ -1027,7 +1087,22 @@ const exerciseLibrary=[
  ['machinehipthrustlb','Machine Hip Thrust — Lower Back','Machine']
 ].map(([pic,name,category])=>({pic,name,category,path:polishedPics[pic]}));
 let libCategory='All';
-const key='darrenGymTrackerV1';
+const baseKey='darrenGymTrackerV1';
+const legacyOwnerKey='darrenGymTrackerLegacyOwner';
+let startupUserId=null;
+try{
+  startupUserId=JSON.parse(localStorage.getItem('gymTrackerSupabaseAuth')||'null')?.user?.id||null;
+}catch(_){}
+
+let key=startupUserId ? `${baseKey}:${startupUserId}` : `${baseKey}:guest`;
+
+// One-time migration of this device's existing local data to the first
+// signed-in account. Keep the legacy copy as an emergency fallback.
+if(startupUserId && !localStorage.getItem(key) && localStorage.getItem(baseKey) && !localStorage.getItem(legacyOwnerKey)){
+  localStorage.setItem(key,localStorage.getItem(baseKey));
+  localStorage.setItem(legacyOwnerKey,startupUserId);
+}
+
 const freshDefaults=()=>defaults.map(e=>({...e,baselineWeight:e.weight,baselineSets:e.sets,baselineReps:e.reps}));
 let state=JSON.parse(localStorage.getItem(key)||'null')||{exercises:freshDefaults(),visits:[],active:null,cardio:{bikeRetired:false,crossRetired:false}};
 /* Fresh/startup load deliberately does not create _updatedAt. */
@@ -1049,8 +1124,8 @@ if(!state.exercises){
 if(!state.cardio)state.cardio={bikeRetired:false,crossRetired:false};
 if(!state.cardio.bike)state.cardio.bike={duration:10,level:5,program:'Intervals'};
 if(!state.cardio.cross)state.cardio.cross={duration:10,level:5,program:'Rolling hills'};
-const stateBuildVersion='6.4.1-library-remove';
-const buildKey='darrenGymTrackerBuild';
+const stateBuildVersion='6.5-user-safe';
+const buildKey=`darrenGymTrackerBuild:${startupUserId||'guest'}`;
 if(localStorage.getItem(buildKey)!==stateBuildVersion){
   // Preserve exercises, visits, preferences AND any real unfinished gym session across builds.
   localStorage.setItem(buildKey,stateBuildVersion);
@@ -1445,16 +1520,31 @@ function renderLibrary(){
  catsEl.innerHTML=cats.map(c=>`<button class="libcat ${libCategory===c?'active':''}" data-lcat="${c}">${c}</button>`).join('');
  const q=(search.value||'').toLowerCase();
  const rows=exerciseLibrary.filter(x=>(libCategory==='All'||x.category===libCategory)&&x.name.toLowerCase().includes(q));
+ const indexedRows=rows.map((x,i)=>({x,i,status:libraryStatus(x)}));
+ const activeRows=indexedRows.filter(r=>r.status==='active');
+ const otherRows=indexedRows.filter(r=>r.status!=='active');
+
  count.textContent=`${rows.length} exercises shown · ${exerciseLibrary.length} in library`;
- grid.innerHTML=rows.map((x,i)=>{
-   const status=libraryStatus(x);
+
+ const cardHTML=({x,i,status})=>{
    const action=status==='active'
      ? `<button class="use" data-remove="${i}">Remove from workout</button>`
      : status==='retired'
        ? `<button class="use" data-reactivate="${i}">Add back to workout</button>`
        : `<button class="use" data-libpic="${x.pic}" data-libname="${x.name}">Add to workout</button>`;
    return `<div class="libcard"><img src="${x.path}" alt="${x.name}"><div class="lname">${x.name}</div><div class="lcat">${x.category}</div>${action}</div>`;
- }).join('');
+ };
+
+ const section=(title,items)=>{
+   const heading=`<div class="library-section-title"><span>${title}</span><span class="library-section-count">${items.length}</span></div>`;
+   const body=items.length
+     ? items.map(cardHTML).join('')
+     : `<div class="library-empty">No exercises in this section.</div>`;
+   return heading+body;
+ };
+
+ grid.innerHTML=section('In my workout',activeRows)+section('Other exercises',otherRows);
+
  document.querySelectorAll('[data-lcat]').forEach(b=>b.onclick=()=>{libCategory=b.dataset.lcat;renderLibrary()});
  document.querySelectorAll('[data-libpic]').forEach(b=>b.onclick=()=>openManageFromLibrary(b.dataset.libpic,b.dataset.libname));
  document.querySelectorAll('[data-reactivate]').forEach(b=>b.onclick=()=>reactivateFromLibrary(rows[Number(b.dataset.reactivate)]));
@@ -1539,6 +1629,10 @@ function getAuth() {
 function setAuth(auth) {
   if (auth) localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
   else localStorage.removeItem(AUTH_STORAGE_KEY);
+}
+function accountLocalKey(name) {
+  const userId=getAuth()?.user?.id || 'guest';
+  return `${name}:${userId}`;
 }
 function cloudMsg(text, cls='') {
   const el=document.getElementById('cloudMessage'); if(!el) return;
@@ -1646,16 +1740,20 @@ async function cloudSignIn() {
       data.expires_at=Math.floor(Date.now()/1000)+Number(data.expires_in);
     }
     setAuth(data);
-    cloudMsg('Signed in.','good');
+    cachedCloudStateRow=null;
+    cachedCloudStateAt=0;
+    cloudMsg('Signed in. Loading this account…','good');
     setCloudAuthUi('connected',data);
-    renderSyncStatus('Checking…');
-    await compareLocalAndCloud();
+    setTimeout(()=>location.reload(),150);
   } catch(e) {
     cloudMsg(e.message || 'Sign in failed.','error');
   }
 }
 function cloudSignOut() {
-  setAuth(null); renderCloudAuth(); cloudMsg('');
+  setAuth(null);
+  cachedCloudStateRow=null;
+  cachedCloudStateAt=0;
+  location.reload();
 }
 
 function cloudBackupMsg(text, cls='') {
@@ -1665,7 +1763,7 @@ function cloudBackupMsg(text, cls='') {
 
 function renderCloudBackupStatus() {
   const el=document.getElementById('cloudBackupStatus'); if(!el) return;
-  const last=localStorage.getItem('gymTrackerLastCloudBackup');
+  const last=localStorage.getItem(accountLocalKey('gymTrackerLastCloudBackup'));
   el.textContent=last
     ? `Last backup ${new Date(last).toLocaleString('en-AU')}`
     : 'No backup made from this device yet.';
@@ -1678,7 +1776,7 @@ function cloudCheckMsg(text, cls='') {
 
 function renderCloudCheckStatus() {
   const el=document.getElementById('cloudCheckStatus'); if(!el) return;
-  const raw=localStorage.getItem('gymTrackerLastCloudCheck');
+  const raw=localStorage.getItem(accountLocalKey('gymTrackerLastCloudCheck'));
   if(!raw){el.textContent='Not checked yet.';return}
   try{
     const info=JSON.parse(raw);
@@ -1714,7 +1812,7 @@ async function checkCloudBackup() {
       visitCount:remoteState.visits.length
     };
 
-    localStorage.setItem('gymTrackerLastCloudCheck',JSON.stringify(info));
+    localStorage.setItem(accountLocalKey('gymTrackerLastCloudCheck'),JSON.stringify(info));
     renderCloudCheckStatus();
     cloudCheckMsg(
       `Cloud backup is valid: ${info.exerciseCount} exercises (${info.programCount} program + ${info.cardioCount} cardio) and ${info.visitCount} visits. Local Gym Tracker data was not changed.`,
@@ -1727,8 +1825,8 @@ async function checkCloudBackup() {
   }
 }
 
-const PRE_RESTORE_KEY='gymTrackerPreRestoreSnapshot';
-const LAST_RESTORE_KEY='gymTrackerLastRestore';
+const PRE_RESTORE_KEY=accountLocalKey('gymTrackerPreRestoreSnapshot');
+const LAST_RESTORE_KEY=accountLocalKey('gymTrackerLastRestore');
 
 function cloudRestoreMsg(text, cls='') {
   const el=document.getElementById('cloudRestoreMessage'); if(!el) return;
@@ -2175,7 +2273,7 @@ async function backupToCloud() {
       throw new Error(detail || `Backup failed (${res.status}).`);
     }
 
-    localStorage.setItem('gymTrackerLastCloudBackup',now);
+    localStorage.setItem(accountLocalKey('gymTrackerLastCloudBackup'),now);
     cachedCloudStateRow={state:JSON.parse(JSON.stringify(state)),updated_at:now};
     cachedCloudStateAt=Date.now();
     renderCloudBackupStatus();
