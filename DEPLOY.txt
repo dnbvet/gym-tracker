@@ -28,3 +28,4 @@ V6.3: added About page to mobile More menu and desktop navigation; moved visible
 V6.3.1: polished mobile bottom navigation, clarified fresh-install cloud wording, and fixed automatic post-sign-in cloud comparison.
 
 V6.3.2: refined mobile bottom navigation pill dimensions, spacing, padding, alignment and typography; increased inactive pill border thickness to 1.5px.
+V6.4 — Session safety: preserves active visits across builds, offers recovery after 3h inactivity, larger Done/smaller Edit, adds 45° Back Extension and Machine Hip Thrust — Lower Back library artwork.

@@ -8,8 +8,8 @@
 <style>
 :root{--bg:#f3f4f6;--card:#fff;--ink:#111827;--muted:#6b7280;--soft:#e5e7eb;--accent:#111827;--good:#166534;--goodbg:#dcfce7;--warn:#92400e;--warnbg:#fef3c7}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}.app{max-width:760px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 14px calc(90px + env(safe-area-inset-bottom))}.topbar{position:sticky;top:0;z-index:20;background:rgba(243,244,246,.92);backdrop-filter:blur(16px);padding:14px 0 10px}.title{display:flex;align-items:center;justify-content:space-between;gap:10px}.title h1{font-size:23px;margin:0;letter-spacing:-.02em}.date{color:var(--muted);font-size:13px;margin-top:3px}.progressbar{height:8px;background:#e5e7eb;border-radius:999px;margin-top:12px;overflow:hidden}.progressbar>div{height:100%;background:var(--accent);width:0%;transition:.2s}.summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chip{background:#fff;border:1px solid var(--soft);padding:7px 10px;border-radius:999px;font-size:13px;color:#374151}.chip.good{background:var(--goodbg);color:var(--good);border-color:#bbf7d0}.section-title{display:flex;align-items:end;justify-content:space-between;margin:20px 2px 10px}.section-title h2{font-size:16px;margin:0}.section-title span{font-size:12px;color:var(--muted)}
-.card{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--soft);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:.2s}.card.done{opacity:.5}.card.done .ex-name{text-decoration:line-through}.icon{width:76px;height:76px;border-radius:15px;background:linear-gradient(145deg,#f9fafb,#e5e7eb);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e5e7eb}.icon svg{width:66px;height:66px}.icon img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}.ex-name{font-weight:760;font-size:16px;line-height:1.15}.sub{margin-top:5px;color:#374151;font-weight:650}.last{margin-top:4px;color:var(--muted);font-size:12px}.actions{display:flex;flex-direction:column;gap:7px}.donebtn{border:0;border-radius:13px;padding:12px 10px;min-width:70px;font-weight:750;background:#111827;color:#fff}.donebtn.done{background:#d1fae5;color:#166534}.editbtn{border:1px solid #d1d5db;border-radius:11px;padding:8px 10px;background:#fff;color:#374151;font-size:12px}.special{grid-template-columns:76px 1fr auto}.special .sub{font-weight:700}.startbox{background:#111827;color:#fff;border-radius:20px;padding:16px;margin:8px 0 14px}.startbox h3{margin:0 0 5px}.startbox p{margin:0;color:#d1d5db;font-size:13px}.primary{border:0;background:#fff;color:#111827;padding:11px 14px;border-radius:12px;font-weight:800;margin-top:12px}.endbtn{width:100%;border:0;background:#111827;color:#fff;border-radius:15px;padding:15px;font-weight:800;margin-top:14px}.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:30;width:min(1040px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid #e5e7eb;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}.tab{border:0;background:transparent;padding:10px;border-radius:12px;color:#6b7280;font-weight:700}.tab.active{background:#111827;color:#fff}.view{display:none}.view.active{display:block}.empty{background:#fff;border:1px dashed #d1d5db;border-radius:16px;padding:20px;text-align:center;color:#6b7280}.visit{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:14px;margin-bottom:10px}.visit-head{display:flex;justify-content:space-between;gap:10px;font-weight:800}.visit small{color:#6b7280}.visit-items{margin-top:8px;color:#374151;font-size:13px;line-height:1.5}.progress-card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px}.progress-card select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:12px;background:#fff;font-weight:700}.canvas-wrap{margin-top:12px;height:210px}.canvas-wrap canvas{width:100%;height:100%}.history-row{display:flex;justify-content:space-between;border-top:1px solid #f0f0f0;padding:9px 0;font-size:13px}.history-row:first-child{border-top:0}.muted{color:#6b7280}.modal-backdrop{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:flex-end;justify-content:center;z-index:100}.modal-backdrop.show{display:flex}.modal{background:#fff;width:min(1040px,100%);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.2)}.modal h3{margin:0 0 14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.field label{display:block;font-size:12px;color:#6b7280;margin-bottom:4px}.field input{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:11px}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.modal-actions button{padding:12px;border-radius:12px;font-weight:800}.cancel{background:#fff;border:1px solid #d1d5db}.save{background:#111827;color:#fff;border:0}.note{font-size:12px;color:#6b7280;margin-top:12px}.badge{font-size:11px;background:#f3f4f6;border-radius:999px;padding:4px 7px;color:#4b5563;margin-left:6px}
-@media(max-width:520px){.app{padding-left:10px;padding-right:10px}.card{grid-template-columns:64px 1fr auto;gap:9px;padding:10px}.icon{width:64px;height:64px}.icon svg{width:56px;height:56px}.ex-name{font-size:15px}.donebtn{min-width:62px;padding:11px 8px}.grid3{grid-template-columns:1fr 1fr}.grid3 .field:last-child{grid-column:1/-1}}
+.card{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--soft);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.03);transition:.2s}.card.done{opacity:.5}.card.done .ex-name{text-decoration:line-through}.icon{width:76px;height:76px;border-radius:15px;background:linear-gradient(145deg,#f9fafb,#e5e7eb);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid #e5e7eb}.icon svg{width:66px;height:66px}.icon img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}.ex-name{font-weight:760;font-size:16px;line-height:1.15}.sub{margin-top:5px;color:#374151;font-weight:650}.last{margin-top:4px;color:var(--muted);font-size:12px}.actions{display:flex;flex-direction:column;gap:7px}.donebtn{border:0;border-radius:13px;padding:14px 14px;min-width:86px;font-weight:800;font-size:14px;background:#111827;color:#fff}.donebtn.done{background:#d1fae5;color:#166534}.editbtn{border:1px solid #d1d5db;border-radius:10px;padding:5px 8px;background:#fff;color:#374151;font-size:11px}.special{grid-template-columns:76px 1fr auto}.special .sub{font-weight:700}.startbox{background:#111827;color:#fff;border-radius:20px;padding:16px;margin:8px 0 14px}.startbox h3{margin:0 0 5px}.startbox p{margin:0;color:#d1d5db;font-size:13px}.primary{border:0;background:#fff;color:#111827;padding:11px 14px;border-radius:12px;font-weight:800;margin-top:12px}.endbtn{width:100%;border:0;background:#111827;color:#fff;border-radius:15px;padding:15px;font-weight:800;margin-top:14px}.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:30;width:min(1040px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid #e5e7eb;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}.tab{border:0;background:transparent;padding:10px;border-radius:12px;color:#6b7280;font-weight:700}.tab.active{background:#111827;color:#fff}.view{display:none}.view.active{display:block}.empty{background:#fff;border:1px dashed #d1d5db;border-radius:16px;padding:20px;text-align:center;color:#6b7280}.visit{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:14px;margin-bottom:10px}.visit-head{display:flex;justify-content:space-between;gap:10px;font-weight:800}.visit small{color:#6b7280}.visit-items{margin-top:8px;color:#374151;font-size:13px;line-height:1.5}.progress-card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px}.progress-card select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:12px;background:#fff;font-weight:700}.canvas-wrap{margin-top:12px;height:210px}.canvas-wrap canvas{width:100%;height:100%}.history-row{display:flex;justify-content:space-between;border-top:1px solid #f0f0f0;padding:9px 0;font-size:13px}.history-row:first-child{border-top:0}.muted{color:#6b7280}.modal-backdrop{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:flex-end;justify-content:center;z-index:100}.modal-backdrop.show{display:flex}.modal{background:#fff;width:min(1040px,100%);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.2)}.modal h3{margin:0 0 14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.field label{display:block;font-size:12px;color:#6b7280;margin-bottom:4px}.field input{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:11px}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.modal-actions button{padding:12px;border-radius:12px;font-weight:800}.cancel{background:#fff;border:1px solid #d1d5db}.save{background:#111827;color:#fff;border:0}.note{font-size:12px;color:#6b7280;margin-top:12px}.badge{font-size:11px;background:#f3f4f6;border-radius:999px;padding:4px 7px;color:#4b5563;margin-left:6px}
+@media(max-width:520px){.app{padding-left:10px;padding-right:10px}.card{grid-template-columns:64px 1fr auto;gap:9px;padding:10px}.icon{width:64px;height:64px}.icon svg{width:56px;height:56px}.ex-name{font-size:15px}.donebtn{min-width:76px;padding:13px 10px}.grid3{grid-template-columns:1fr 1fr}.grid3 .field:last-child{grid-column:1/-1}}
 .managebar{display:flex;justify-content:space-between;align-items:center;margin:4px 0 14px}.addbtn{border:0;background:#111827;color:white;padding:11px 14px;border-radius:12px;font-weight:800}.manage-card{display:grid;grid-template-columns:58px 1fr auto;gap:11px;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:10px;margin-bottom:9px}.manage-card .icon{width:58px;height:58px;border-radius:12px}.manage-card .icon svg{width:50px;height:50px}.smallbtn{border:1px solid #d1d5db;background:#fff;border-radius:10px;padding:8px 9px;font-weight:700}.danger{color:#991b1b}.library{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}.picchoice{border:2px solid transparent;background:#fff;border-radius:13px;padding:5px;text-align:center}.picchoice.selected{border-color:#111827}.picchoice img,.picchoice .libsvg{width:100%;aspect-ratio:1.15;object-fit:contain;border-radius:9px;background:#f3f4f6}.picchoice span{display:block;font-size:10px;margin-top:4px;color:#4b5563}.seg{display:flex;gap:6px;margin-bottom:12px}.seg button{flex:1;border:1px solid #d1d5db;background:#fff;padding:9px;border-radius:10px;font-weight:700}.seg button.active{background:#111827;color:#fff}.widefield{margin-top:10px}.widefield input,.widefield select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:11px;background:#fff}@media(max-width:520px){.library{grid-template-columns:repeat(2,1fr)}}
 
 .sidebar{display:none}
@@ -37,6 +37,17 @@
 }
 
 .libtools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.libtools input{flex:1;min-width:220px;padding:12px 14px;border:1px solid #d1d5db;border-radius:12px;background:#fff}.libcats{display:flex;gap:6px;flex-wrap:wrap}.libcat{border:1px solid #d1d5db;background:#fff;border-radius:999px;padding:9px 12px;font-weight:700;color:#475569}.libcat.active{background:#111827;color:#fff}.library-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.libcard{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:10px;cursor:pointer}.libcard:hover{box-shadow:0 4px 18px rgba(0,0,0,.08)}.libcard img{width:100%;aspect-ratio:1.35;object-fit:contain;background:#fff;border-radius:10px}.libcard .lname{font-weight:800;margin-top:7px}.libcard .lcat{font-size:12px;color:#64748b;margin-top:3px}.libcard .use{margin-top:8px;width:100%;border:0;background:#111827;color:#fff;border-radius:10px;padding:8px;font-weight:750}@media(max-width:900px){.library-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.library-grid{grid-template-columns:repeat(2,1fr);gap:8px}.libcard{padding:7px}.libcard .lname{font-size:13px}}
+
+/* V6.4 session recovery */
+.visit-recovery{position:fixed;left:12px;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:90;max-width:720px;margin:0 auto;background:#fff;border:1px solid #d1d5db;border-radius:18px;padding:14px;box-shadow:0 12px 34px rgba(17,24,39,.18)}
+.visit-recovery strong{display:block;font-size:15px;margin-bottom:4px}
+.visit-recovery p{margin:0 0 11px;color:#4b5563;font-size:13px;line-height:1.35}
+.visit-recovery-actions{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:8px}
+.visit-recovery-actions button{border-radius:11px;padding:10px 8px;font-weight:800;font-size:12px}
+.visit-recovery-save{border:0;background:#111827;color:#fff}
+.visit-recovery-resume{border:1px solid #d1d5db;background:#f8fafc;color:#111827}
+.visit-recovery-cancel{border:1px solid #fecaca;background:#fff;color:#991b1b}
+
 </style>
 
 <style id="v34-approved-artwork">
@@ -874,8 +885,8 @@ main > header,
     <div class="about-card">
       <h2>Darren's Gym Tracker</h2>
       <p>Personal gym program, visit and progression tracker.</p>
-      <div class="about-row"><span>Version</span><strong>V6.3.2</strong></div>
-      <div class="about-row"><span>Build</span><strong>Bottom navigation polish</strong></div>
+      <div class="about-row"><span>Version</span><strong>V6.4</strong></div>
+      <div class="about-row"><span>Build</span><strong>Session safety + new exercises</strong></div>
       <div class="about-row"><span>Data</span><strong>Local-first + Supabase cloud sync</strong></div>
     </div>
   </div>
@@ -963,9 +974,10 @@ const polishedPics={
  pallof:'assets/pallof.jpg',hipabd:'assets/hipabd.jpg',hipext:'assets/hipext.jpg',
  shrug:'assets/shrug.jpg',facepull:'assets/facepull.jpg',hipthrust:'assets/glutebridge.jpg',
  glutebridge:'assets/glutebridge.jpg',kneeext:'assets/kneeext.jpg',legcurl:'assets/legcurl.jpg',
- hinge:'assets/hinge.jpg',seatedrow:'assets/seatedrow.jpg',cross:'assets/cross.jpg'
+ hinge:'assets/hinge.jpg',seatedrow:'assets/seatedrow.jpg',cross:'assets/cross.jpg',
+ backext45:'assets/backextension45.jpg',machinehipthrustlb:'assets/machine-hip-thrust-lower-back.jpg'
 };
-const pictureNames={bike:'Exercise bike',foam:'Foam roll',legpress:'Leg press',dbrow:'Dumbbell row',chest:'Chest press',lat:'Lat pulldown',cross:'Cross trainer',seatedrow:'Seated row',cable:'Cable exercise',shrug:'Dumbbell exercise',hipthrust:'Hip thrust',kneeext:'Leg extension',legcurl:'Hamstring curl',hinge:'Barbell hinge'};
+const pictureNames={bike:'Exercise bike',foam:'Foam roll',legpress:'Leg press',dbrow:'Dumbbell row',chest:'Chest press',lat:'Lat pulldown',cross:'Cross trainer',seatedrow:'Seated row',cable:'Cable exercise',shrug:'Dumbbell exercise',hipthrust:'Hip thrust',kneeext:'Leg extension',legcurl:'Hamstring curl',hinge:'Barbell hinge',backext45:'45° Back Extension',machinehipthrustlb:'Machine Hip Thrust — Lower Back'};
 const visual=(e)=>polishedPics[e.pic||e.id]?`<img src="${polishedPics[e.pic||e.id]}" alt="">`:svg(e.icon||e.pic||'cable');
 
 const defaults=[
@@ -1010,7 +1022,9 @@ const exerciseLibrary=[
  ['kneeext','Knee extension — single leg','Machine'],
  ['legcurl','Lying hamstring curl — machine','Machine'],
  ['hinge','Barbell back-strengthening hinge','Barbell'],
- ['seatedrow','Seated row','Machine']
+ ['seatedrow','Seated row','Machine'],
+ ['backext45','45° Back Extension','Machine'],
+ ['machinehipthrustlb','Machine Hip Thrust — Lower Back','Machine']
 ].map(([pic,name,category])=>({pic,name,category,path:polishedPics[pic]}));
 let libCategory='All';
 const key='darrenGymTrackerV1';
@@ -1035,11 +1049,10 @@ if(!state.exercises){
 if(!state.cardio)state.cardio={bikeRetired:false,crossRetired:false};
 if(!state.cardio.bike)state.cardio.bike={duration:10,level:5,program:'Intervals'};
 if(!state.cardio.cross)state.cardio.cross={duration:10,level:5,program:'Rolling hills'};
-const stateBuildVersion='6.3.2-nav-polish';
+const stateBuildVersion='6.4-session-safety';
 const buildKey='darrenGymTrackerBuild';
 if(localStorage.getItem(buildKey)!==stateBuildVersion){
-  // Keep program edits and saved visits, but never inherit an unfinished test session across builds.
-  state.active=null;
+  // Preserve exercises, visits, preferences AND any real unfinished gym session across builds.
   localStorage.setItem(buildKey,stateBuildVersion);
   localStorage.setItem(key,JSON.stringify(state));
 }
@@ -1051,6 +1064,53 @@ const save=()=>{
 const fmtDate=(iso)=>new Date(iso).toLocaleDateString('en-AU',{day:'2-digit',month:'2-digit',year:'numeric'});
 const trackerBaselineDate='2026-08-30T00:00:00+09:30';
 const fmtTime=(iso)=>new Date(iso).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+
+function removeVisitRecovery(){
+ const el=document.getElementById('visitRecovery');
+ if(el)el.remove();
+}
+function saveRecoveredVisit(){
+ if(!state.active)return;
+ const completed=Object.entries(state.active.done||{}).filter(([,v])=>v).map(([k])=>k);
+ if(!completed.length){alert('There are no completed exercises to save from this visit. Resume it or cancel it instead.');return;}
+ const endedAt=state._updatedAt||new Date().toISOString();
+ state.visits.unshift({id:Date.now(),startedAt:state.active.startedAt,endedAt,done:completed,snapshot:state.active.snapshot||{}});
+ state.active=null;
+ save();
+ removeVisitRecovery();
+ renderAll();
+}
+function cancelRecoveredVisit(){
+ if(!state.active)return;
+ if(!confirm("Cancel the previous visit? Completed exercises from that visit won't be saved."))return;
+ state.active=null;
+ save();
+ removeVisitRecovery();
+ renderAll();
+}
+function showStaleVisitRecovery(){
+ if(!state.active||document.getElementById('visitRecovery'))return;
+ const last=state._updatedAt||state.active.startedAt;
+ const ageMs=Date.now()-new Date(last).getTime();
+ if(!Number.isFinite(ageMs)||ageMs<3*60*60*1000)return;
+ const completed=Object.values(state.active.done||{}).filter(Boolean).length;
+ const el=document.createElement('div');
+ el.id='visitRecovery';
+ el.className='visit-recovery';
+ el.innerHTML=`<strong>Previous gym visit still open</strong>
+   <p>${completed} completed item${completed===1?'':'s'} - started ${fmtDate(state.active.startedAt)} at ${fmtTime(state.active.startedAt)}. Save it, resume it, or cancel it.</p>
+   <div class="visit-recovery-actions">
+     <button class="visit-recovery-save" id="recoverySave">Save previous visit</button>
+     <button class="visit-recovery-resume" id="recoveryResume">Resume</button>
+     <button class="visit-recovery-cancel" id="recoveryCancel">Cancel</button>
+   </div>`;
+ document.body.appendChild(el);
+ document.getElementById('recoverySave').onclick=saveRecoveredVisit;
+ document.getElementById('recoveryResume').onclick=removeVisitRecovery;
+ document.getElementById('recoveryCancel').onclick=cancelRecoveredVisit;
+}
+window.addEventListener('load',()=>setTimeout(showStaleVisitRecovery,250));
+
 
 document.getElementById('today').textContent=new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
