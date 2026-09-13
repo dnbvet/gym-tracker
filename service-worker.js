@@ -1,5 +1,5 @@
-const CACHE='gym-tracker-v6-9-artwork';
-const STATIC=["./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./assets/bike.jpg", "./assets/chest.jpg", "./assets/cross.jpg", "./assets/dbrow.jpg", "./assets/facepull.jpg", "./assets/foam.jpg", "./assets/glutebridge.jpg", "./assets/hinge.jpg", "./assets/hipabd.jpg", "./assets/hipext.jpg", "./assets/kneeext.jpg", "./assets/lat.jpg", "./assets/legcurl.jpg", "./assets/legpress.jpg", "./assets/pallof.jpg", "./assets/seatedrow.jpg", "./assets/shrug.jpg", "./assets/backextension45.jpg", "./assets/machine-hip-thrust-lower-back.jpg", "./assets/treadmill.jpg", "./assets/rower.jpg"];
+const CACHE='gym-tracker-v6-9-artwork-test';
+const STATIC=["./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./assets/bike.jpg", "./assets/chest.jpg", "./assets/cross.jpg", "./assets/dbrow.jpg", "./assets/facepull.jpg", "./assets/foam.jpg", "./assets/glutebridge.jpg", "./assets/hinge.jpg", "./assets/hipabd.jpg", "./assets/hipext.jpg", "./assets/kneeext.jpg", "./assets/lat.jpg", "./assets/legcurl.jpg", "./assets/legpress.jpg", "./assets/pallof.jpg", "./assets/seatedrow.jpg", "./assets/shrug.jpg", "./assets/backextension45.jpg", "./assets/machine-hip-thrust-lower-back.jpg", "./assets/treadmill.jpg", "./assets/rower.jpg", "./assets/legpress-new.jpg", "./assets/facepull-new.jpg", "./assets/dbrow-new.jpg"];
 
 self.addEventListener('install', event => {
   event.waitUntil(
