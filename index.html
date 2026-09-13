@@ -821,11 +821,6 @@ main > header,
   <div id="visits" class="view">
     <div class="topbar"><div class="title"><div><h1>Visits</h1><div class="date">Attendance history</div></div></div></div>
     <div id="visitsList"></div>
-    <div class="resetbox">
-      <strong>Testing / reset</strong><br>
-      When testing is finished, this restores the original program values and clears test visits.
-      <br><button id="resetTestData" class="resetbtn">Reset test data & restore starting program</button>
-    </div>
   </div>
 
   <div id="progress" class="view">
@@ -950,8 +945,8 @@ main > header,
     <div class="about-card">
       <h2>Gym Tracker</h2>
       <p>Personal gym program, visit and progression tracker.</p>
-      <div class="about-row"><span>Version</span><strong>V6.7</strong></div>
-      <div class="about-row"><span>Build</span><strong>Visit deletion</strong></div>
+      <div class="about-row"><span>Version</span><strong>V6.8</strong></div>
+      <div class="about-row"><span>Build</span><strong>Remove legacy workout defaults</strong></div>
       <div class="about-row"><span>Data</span><strong>Local-first + Supabase cloud sync</strong></div>
     </div>
   </div>
@@ -1045,7 +1040,7 @@ const polishedPics={
 const pictureNames={bike:'Exercise bike',foam:'Foam roll',legpress:'Leg press',dbrow:'Dumbbell row',chest:'Chest press',lat:'Lat pulldown',cross:'Cross trainer',seatedrow:'Seated row',cable:'Cable exercise',shrug:'Dumbbell exercise',hipthrust:'Hip thrust',kneeext:'Leg extension',legcurl:'Hamstring curl',hinge:'Barbell hinge',backext45:'45° Back Extension',machinehipthrustlb:'Machine Hip Thrust — Lower Back'};
 const visual=(e)=>polishedPics[e.pic||e.id]?`<img src="${polishedPics[e.pic||e.id]}" alt="">`:svg(e.icon||e.pic||'cable');
 
-const defaults=[
+const legacyExerciseDefaults=[
  {id:'foam',name:'Thoracic foam roll',kind:'duration',duration:1,icon:'foam',pic:'foam'},
  {id:'legpress',name:'Leg press — single leg',sets:3,reps:10,weight:35,icon:'legpress',pic:'legpress'},
  {id:'dbrow',name:'Bent-over row — single arm',sets:3,reps:10,weight:17.5,icon:'row',pic:'dbrow'},
@@ -1108,7 +1103,6 @@ if(startupUserId && !localStorage.getItem(key) && localStorage.getItem(baseKey) 
   localStorage.setItem(legacyOwnerKey,startupUserId);
 }
 
-const freshDefaults=()=>defaults.map(e=>({...e,baselineWeight:e.weight,baselineSets:e.sets,baselineReps:e.reps}));
 const freshUserState=()=>({
   exercises:[],
   visits:[],
@@ -1123,11 +1117,11 @@ const freshUserState=()=>({
 const storedStateRaw=localStorage.getItem(key);
 let state=JSON.parse(storedStateRaw||'null')||freshUserState();
 /* Fresh/startup load deliberately does not create _updatedAt. */
-if(!state.exercises){
-  state.exercises=freshDefaults();
+if(!Array.isArray(state.exercises)){
+  state.exercises=[];
 }else{
   state.exercises=state.exercises.map(e=>{
-    const d=defaults.find(x=>x.id===e.id);
+    const d=legacyExerciseDefaults.find(x=>x.id===e.id);
     return {
       ...d,...e,
       pic:d?.pic||e.pic,icon:d?.icon||e.icon,
@@ -1403,9 +1397,9 @@ function renderProgressDetail(){
  const e=state.exercises.find(x=>x.id===id);
  const baseline={
    date:trackerBaselineDate,label:`Starting program · ${fmtDate(trackerBaselineDate)}`,
-   weight:Number(e.baselineWeight??defaults.find(d=>d.id===id)?.weight??e.weight),
-   sets:Number(e.baselineSets??defaults.find(d=>d.id===id)?.sets??e.sets),
-   reps:Number(e.baselineReps??defaults.find(d=>d.id===id)?.reps??e.reps),
+   weight:Number(e.baselineWeight??e.weight),
+   sets:Number(e.baselineSets??e.sets),
+   reps:Number(e.baselineReps??e.reps),
    baseline:true
  };
  const saved=state.visits
@@ -1591,15 +1585,6 @@ function renderLibrary(){
 }
 function renderAll(){renderWorkout();renderVisits();renderProgress();renderManage();renderLibrary()}
 
-function resetTestData(){
- if(!confirm('Clear all test visits and restore the original starting weights, sets and reps?'))return;
- state={exercises:freshDefaults(),visits:[],active:null,cardio:{bikeRetired:false,crossRetired:false,bike:{duration:10,level:5,program:'Intervals'},cross:{duration:10,level:5,program:'Rolling hills'}}};
- recentlyCompleted=null;
- save();
- switchView('workout');
- setTimeout(()=>renderAll(),0);
-}
-document.getElementById('resetTestData').onclick=resetTestData;
 document.getElementById('cancelCardioEdit').onclick=closeCardioEdit;
 document.getElementById('saveCardioEdit').onclick=saveCardioEdit;
 document.getElementById('cardioEditModal').onclick=e=>{if(e.target.id==='cardioEditModal')closeCardioEdit()};
