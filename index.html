@@ -1039,6 +1039,23 @@ const polishedPics={
  backext45:'assets/backextension45-v2.jpg',machinehipthrustlb:'assets/machine-hip-thrust-lower-back-v2.jpg'
 };
 const pictureNames={bike:'Exercise bike',foam:'Thoracic roll',legpress:'Leg press',dbrow:'Dumbbell row',chest:'Chest press',lat:'Lat pulldown',cross:'Cross trainer',seatedrow:'Seated row',cable:'Cable exercise',shrug:'Dumbbell exercise',hipthrust:'Hip thrust',kneeext:'Leg extension',legcurl:'Hamstring curl',hinge:'Barbell hinge',backext45:'45° Back Extension',machinehipthrustlb:'Machine Hip Thrust — Lower Back'};
+
+const todayThumbs={
+ bike:'assets/bike-thumb.jpg',
+ foam:'assets/foam-thumb.jpg',
+ hinge:'assets/hinge-thumb.jpg',
+ seatedrow:'assets/seatedrow-thumb.jpg',
+ cross:'assets/cross-thumb.jpg',
+ backext45:'assets/backextension45-thumb.jpg',
+ machinehipthrustlb:'assets/machine-hip-thrust-lower-back-thumb.jpg'
+};
+
+const visualToday=(e)=>{
+ const key=e.pic||e.id;
+ if(todayThumbs[key])return `<img src="${todayThumbs[key]}" alt="">`;
+ return visual(e);
+};
+
 const visual=(e)=>{
  const key=e.pic||e.id;
  if(polishedPics[key])return `<img src="${polishedPics[key]}" alt="">`;
@@ -1399,7 +1416,7 @@ function cardHTML(e){
  const just=recentlyCompleted===e.id;
  const sub=e.kind==='duration'?`${e.duration} min`:`${e.weight} kg · ${e.sets} × ${e.reps}`;
  return `<div class="card ${just?'justdone':done?'done':''}" data-id="${e.id}">
- <div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}</div>
+ <div class="icon">${visualToday(e)}</div><div><div class="ex-name">${e.name}</div>
  <div class="sub">${sub}</div><div class="last">${lastText(e.id)}</div></div>
  <div class="actions">${e.kind==='duration'?'':`<button class="editbtn" data-edit="${e.id}">Edit</button>`}
  <button class="donebtn ${done||just?'done':''}" data-done="${e.id}" ${just?'disabled':''}>${done||just?'✓ Done':'Done'}</button></div></div>`;
@@ -1408,7 +1425,7 @@ function cardioHTML(e){
  const done=!!(state.active&&state.active.done[e.id]);
  const just=recentlyCompleted===e.id;
  return `<div class="card special ${just?'justdone':done?'done':''}">
- <div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}</div>
+ <div class="icon">${visualToday(e)}</div><div><div class="ex-name">${e.name}</div>
  <div class="sub">${e.duration} min${e.detail?` · ${e.detail}`:''}</div><div class="last">${lastText(e.id)}</div></div>
  <div class="actions"><button class="editbtn" data-cardio-edit="${e.id}">Edit</button><button class="donebtn ${done||just?'done':''}" data-done="${e.id}" ${just?'disabled':''}>${done||just?'✓ Done':'Done'}</button></div></div>`;
 }
