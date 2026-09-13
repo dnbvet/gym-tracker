@@ -806,11 +806,11 @@ main > header,
       <button id="chooseExercisesBtn" class="primary">Choose exercises</button>
     </div>
     <div id="startBox" class="startbox"><h3>Ready to train?</h3><p>Start a visit to track attendance and today’s exercise progression.</p><button id="startBtn" class="primary">Start gym visit</button></div>
-    <div class="section-title"><h2>Warm-up</h2><span>usual start</span></div>
+    <div id="warmupTitle" class="section-title"><h2>Warm-up</h2><span>usual start</span></div>
     <div id="warmup"></div>
-    <div class="section-title"><h2>Strength</h2><span>choose any available exercise</span></div>
+    <div id="mainTitle" class="section-title"><h2>Main workout</h2><span>main session</span></div>
     <div id="strength"></div>
-    <div class="section-title"><h2>Finish</h2><span>usual finish</span></div>
+    <div id="finishTitle" class="section-title"><h2>Finish</h2><span>usual finish</span></div>
     <div id="finish"></div>
     <div id="visitActions" class="visit-actions" style="display:none">
       <button id="cancelVisitBtn" class="cancel-visit-btn">Cancel visit</button>
@@ -945,8 +945,8 @@ main > header,
     <div class="about-card">
       <h2>Gym Tracker</h2>
       <p>Personal gym program, visit and progression tracker.</p>
-      <div class="about-row"><span>Version</span><strong>V6.8</strong></div>
-      <div class="about-row"><span>Build</span><strong>Remove legacy workout defaults</strong></div>
+      <div class="about-row"><span>Version</span><strong>V6.9</strong></div>
+      <div class="about-row"><span>Build</span><strong>Generic cardio exercises</strong></div>
       <div class="about-row"><span>Data</span><strong>Local-first + Supabase cloud sync</strong></div>
     </div>
   </div>
@@ -985,8 +985,8 @@ main > header,
     <h3 id="cardioEditTitle">Edit cardio</h3>
     <div class="grid3">
       <div class="field"><label>Time (min)</label><input id="cardioDurationInput" inputmode="numeric" /></div>
-      <div class="field"><label>Level</label><input id="cardioLevelInput" inputmode="numeric" /></div>
-      <div class="field"><label>Program</label><input id="cardioProgramInput" /></div>
+      <div class="field"><label id="cardioField1Label">Level</label><input id="cardioLevelInput" /></div>
+      <div class="field"><label id="cardioField2Label">Program</label><input id="cardioProgramInput" /></div>
     </div>
     <div class="modal-actions">
       <button class="cancel" id="cancelCardioEdit">Cancel</button>
@@ -1038,7 +1038,12 @@ const polishedPics={
  backext45:'assets/backextension45.jpg',machinehipthrustlb:'assets/machine-hip-thrust-lower-back.jpg'
 };
 const pictureNames={bike:'Exercise bike',foam:'Foam roll',legpress:'Leg press',dbrow:'Dumbbell row',chest:'Chest press',lat:'Lat pulldown',cross:'Cross trainer',seatedrow:'Seated row',cable:'Cable exercise',shrug:'Dumbbell exercise',hipthrust:'Hip thrust',kneeext:'Leg extension',legcurl:'Hamstring curl',hinge:'Barbell hinge',backext45:'45° Back Extension',machinehipthrustlb:'Machine Hip Thrust — Lower Back'};
-const visual=(e)=>polishedPics[e.pic||e.id]?`<img src="${polishedPics[e.pic||e.id]}" alt="">`:svg(e.icon||e.pic||'cable');
+const visual=(e)=>{
+ const key=e.pic||e.id;
+ if(polishedPics[key])return `<img src="${polishedPics[key]}" alt="">`;
+ if(cardioDefinitions?.[key])return `<div style="font-size:11px;font-weight:700;text-align:center;line-height:1.1">CARDIO</div>`;
+ return svg(e.icon||e.pic||'cable');
+};
 
 const legacyExerciseDefaults=[
  {id:'foam',name:'Thoracic foam roll',kind:'duration',duration:1,icon:'foam',pic:'foam'},
@@ -1057,17 +1062,178 @@ const legacyExerciseDefaults=[
  {id:'hinge',name:'Barbell back-strengthening hinge',sets:3,reps:8,weight:20,icon:'hinge',pic:'hinge'},
  {id:'seatedrow',name:'Seated row',sets:3,reps:10,weight:35,icon:'seatedrow',pic:'seatedrow',badge:'self-added'}
 ];
-const cardio={warmup:{id:'bike',name:'Exercise bike',duration:10,detail:'Level 5 · Intervals',icon:'bike',pic:'bike'},finish:{id:'cross',name:'Cross trainer',duration:10,detail:'Level 5 · Rolling hills',icon:'cross',pic:'cross'}};
+const cardioDefinitions={
+ bike:{
+   id:'bike',name:'Exercise bike',pic:'bike',icon:'bike',
+   section:'warmup',
+   defaults:{duration:10,level:5,program:'Intervals'},
+   fields:[
+     {key:'level',label:'Level',inputMode:'numeric',prefix:'Level ',numeric:true},
+     {key:'program',label:'Program'}
+   ]
+ },
+ cross:{
+   id:'cross',name:'Cross trainer',pic:'cross',icon:'cross',
+   section:'finish',
+   defaults:{duration:10,level:5,program:'Rolling hills'},
+   fields:[
+     {key:'level',label:'Level',inputMode:'numeric',prefix:'Level ',numeric:true},
+     {key:'program',label:'Program'}
+   ]
+ },
+ treadmill:{
+   id:'treadmill',name:'Treadmill',pic:'treadmill',icon:'treadmill',
+   section:'main',
+   defaults:{duration:10,speed:'',incline:''},
+   fields:[
+     {key:'speed',label:'Speed (km/h)',inputMode:'decimal',prefix:'Speed ',suffix:' km/h',numeric:true},
+     {key:'incline',label:'Incline (%)',inputMode:'decimal',prefix:'Incline ',suffix:'%',numeric:true}
+   ]
+ },
+ rower:{
+   id:'rower',name:'Rowing machine',pic:'rower',icon:'rower',
+   section:'main',
+   defaults:{duration:10,level:'',program:''},
+   fields:[
+     {key:'level',label:'Level',inputMode:'numeric',prefix:'Level ',numeric:true},
+     {key:'program',label:'Program'}
+   ]
+ }
+};
+
+function cardioDefinition(id){
+ return cardioDefinitions[id]||null;
+}
+
+function cardioDetail(def,prefs){
+ if(!def)return '';
+ return (def.fields||[]).map(field=>{
+   const value=prefs?.[field.key];
+   if(value===undefined||value===null||String(value).trim()==='')return null;
+
+   if(field.key==='program')return String(value).trim();
+
+   return `${field.prefix||''}${value}${field.suffix||''}`;
+ }).filter(Boolean).join(' · ');
+}
+
 function cardioCurrent(id){
- const base=id==='bike'?cardio.warmup:cardio.finish;
- const prefs=id==='bike'?state.cardio.bike:state.cardio.cross;
- return {...base,duration:prefs.duration,level:prefs.level,program:prefs.program,detail:`Level ${prefs.level} · ${prefs.program}`};
+ const def=cardioDefinition(id);
+ const prefs=state.cardio?.[id];
+ if(!def||!prefs)return null;
+
+ const merged={...def.defaults,...prefs};
+
+ return {
+   ...def,
+   ...merged,
+   duration:Number(merged.duration??10),
+   detail:cardioDetail(def,merged),
+   kind:'cardio'
+ };
+}
+
+function cardioSnapshot(id,prefs){
+ const def=cardioDefinition(id);
+ if(!def)return null;
+
+ const snap={
+   duration:Number(prefs.duration??10)
+ };
+
+ (def.fields||[]).forEach(field=>{
+   const value=prefs[field.key];
+   if(value!==undefined&&value!==null&&String(value).trim()!==''){
+     snap[field.key]=value;
+   }
+ });
+
+ snap.detail=cardioDetail(def,snap);
+ return snap;
+}
+
+function cardioSnapshotSummary(id,snap){
+ if(!snap)return '';
+ const def=cardioDefinition(id);
+ const detail=def?cardioDetail(def,snap):(snap.detail||'');
+
+ return `${snap.duration} min${detail?` · ${detail}`:''}`;
+}
+
+function activeCardio(){
+ return Object.keys(state.cardio||{})
+   .map(cardioCurrent)
+   .filter(Boolean);
+}
+
+function cardioCountForState(sourceState){
+ if(!sourceState?.cardio)return 0;
+
+ // Current generic schema.
+ const genericIds=Object.keys(sourceState.cardio)
+   .filter(id=>cardioDefinitions[id] && sourceState.cardio[id] && typeof sourceState.cardio[id]==='object');
+
+ // Legacy bike/cross flags are metadata, not exercises.
+ return genericIds.length;
+}
+
+function migrateCardio(sourceState){
+ if(!sourceState||typeof sourceState!=='object')return sourceState;
+
+ const old=sourceState.cardio;
+ if(!old||typeof old!=='object'){
+   sourceState.cardio={};
+   return sourceState;
+ }
+
+ const migrated={};
+
+ // Legacy V6.8 and earlier.
+ if(Object.prototype.hasOwnProperty.call(old,'bikeRetired') ||
+    Object.prototype.hasOwnProperty.call(old,'crossRetired')){
+   if(old.bikeRetired===false){
+     migrated.bike={
+       ...cardioDefinitions.bike.defaults,
+       section:cardioDefinitions.bike.section||'main',
+       ...(old.bike||{})
+     };
+   }
+   if(old.crossRetired===false){
+     migrated.cross={
+       ...cardioDefinitions.cross.defaults,
+       section:cardioDefinitions.cross.section||'main',
+       ...(old.cross||{})
+     };
+   }
+
+   // Preserve any already-generic future entries if present.
+   Object.keys(cardioDefinitions).forEach(id=>{
+     if(id!=='bike'&&id!=='cross'&&old[id]&&typeof old[id]==='object'){
+       migrated[id]={...cardioDefinitions[id].defaults,section:cardioDefinitions[id].section||'main',...old[id]};
+     }
+   });
+
+   sourceState.cardio=migrated;
+   return sourceState;
+ }
+
+ // Current generic schema.
+ Object.keys(cardioDefinitions).forEach(id=>{
+   if(old[id]&&typeof old[id]==='object'){
+     migrated[id]={...cardioDefinitions[id].defaults,section:cardioDefinitions[id].section||'main',...old[id]};
+   }
+ });
+
+ sourceState.cardio=migrated;
+ return sourceState;
 }
 
 
 const exerciseLibrary=[
  ['bike','Exercise bike','Cardio'],
  ['cross','Cross trainer','Cardio'],
+ ['treadmill','Treadmill','Cardio'],
+ ['rower','Rowing machine','Cardio'],
  ['foam','Thoracic foam roll','Mobility'],
  ['legpress','Leg press — single leg','Machine'],
  ['dbrow','Bent-over row — single arm','Dumbbell'],
@@ -1107,12 +1273,7 @@ const freshUserState=()=>({
   exercises:[],
   visits:[],
   active:null,
-  cardio:{
-    bikeRetired:true,
-    crossRetired:true,
-    bike:{duration:10,level:5,program:'Intervals'},
-    cross:{duration:10,level:5,program:'Rolling hills'}
-  }
+  cardio:{}
 });
 const storedStateRaw=localStorage.getItem(key);
 let state=JSON.parse(storedStateRaw||'null')||freshUserState();
@@ -1132,10 +1293,8 @@ if(!Array.isArray(state.exercises)){
     };
   });
 }
-if(!state.cardio)state.cardio={bikeRetired:false,crossRetired:false};
-if(!state.cardio.bike)state.cardio.bike={duration:10,level:5,program:'Intervals'};
-if(!state.cardio.cross)state.cardio.cross={duration:10,level:5,program:'Rolling hills'};
-const stateBuildVersion='6.6-onboarding';
+state=migrateCardio(state);
+const stateBuildVersion='6.9-generic-cardio';
 const buildKey=`darrenGymTrackerBuild:${startupUserId||'guest'}`;
 if(localStorage.getItem(buildKey)!==stateBuildVersion){
   // Preserve exercises, visits, preferences AND any real unfinished gym session across builds.
@@ -1204,9 +1363,9 @@ function startVisit(){
  if(state.active)return;
  state.active={startedAt:new Date().toISOString(),done:{},snapshot:{}};
  state.exercises.forEach(e=>state.active.snapshot[e.id]={sets:e.sets,reps:e.reps,weight:e.weight,duration:e.duration});
- const bike=cardioCurrent('bike'),cross=cardioCurrent('cross');
- state.active.snapshot.bike={duration:bike.duration,level:bike.level,program:bike.program,detail:bike.detail};
- state.active.snapshot.cross={duration:cross.duration,level:cross.level,program:cross.program,detail:cross.detail};
+ activeCardio().forEach(e=>{
+   state.active.snapshot[e.id]=cardioSnapshot(e.id,state.cardio[e.id]);
+ });
  save();renderAll();
 }
 let recentlyCompleted=null,doneMoveTimer=null;
@@ -1249,14 +1408,38 @@ function cardioHTML(e){
  const just=recentlyCompleted===e.id;
  return `<div class="card special ${just?'justdone':done?'done':''}">
  <div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}</div>
- <div class="sub">${e.duration} min · ${e.detail}</div><div class="last">${lastText(e.id)}</div></div>
+ <div class="sub">${e.duration} min${e.detail?` · ${e.detail}`:''}</div><div class="last">${lastText(e.id)}</div></div>
  <div class="actions"><button class="editbtn" data-cardio-edit="${e.id}">Edit</button><button class="donebtn ${done||just?'done':''}" data-done="${e.id}" ${just?'disabled':''}>${done||just?'✓ Done':'Done'}</button></div></div>`;
 }
-function lastText(id){const v=state.visits.find(v=>v.done.includes(id)); if(!v)return 'No previous visit logged'; if(id==='bike'||id==='cross'){const s=v.snapshot?.[id];return s?`Last: ${s.duration} min · Level ${s.level??'?'}${s.program?` · ${s.program}`:''} · ${fmtDate(v.startedAt)}`:`Last done ${fmtDate(v.startedAt)}`;} const s=v.snapshot[id]; if(!s)return `Last done ${fmtDate(v.startedAt)}`; if(s.duration)return `Last: ${s.duration} min · ${fmtDate(v.startedAt)}`; return `Last: ${s.weight} kg · ${s.sets} × ${s.reps} · ${fmtDate(v.startedAt)}`}
+function lastText(id){
+ const v=state.visits.find(v=>v.done.includes(id));
+ if(!v)return 'No previous visit logged';
+
+ const snap=v.snapshot?.[id];
+ if(cardioDefinition(id)){
+   return snap
+     ? `Last: ${cardioSnapshotSummary(id,snap)} · ${fmtDate(v.startedAt)}`
+     : `Last done ${fmtDate(v.startedAt)}`;
+ }
+
+ if(!snap)return `Last done ${fmtDate(v.startedAt)}`;
+ if(snap.duration)return `Last: ${snap.duration} min · ${fmtDate(v.startedAt)}`;
+ return `Last: ${snap.weight} kg · ${snap.sets} × ${snap.reps} · ${fmtDate(v.startedAt)}`;
+}
+function workoutSection(e){
+ if(e?.section==='warmup'||e?.section==='main'||e?.section==='finish')return e.section;
+ if(e?.kind==='cardio'){
+   return cardioDefinition(e.id)?.section||'main';
+ }
+ if(e?.id==='foam')return 'warmup';
+ return 'main';
+}
+
 function renderWorkout(){
  const activeExercises=state.exercises.filter(e=>!e.retired);
- const bikeActive=!state.cardio.bikeRetired,crossActive=!state.cardio.crossRetired;
- const hasWorkout=activeExercises.length>0||bikeActive||crossActive;
+ const cardioItems=activeCardio();
+ const allItems=[...activeExercises,...cardioItems];
+ const hasWorkout=allItems.length>0;
 
  document.getElementById('setupBox').style.display=(!state.active&&!hasWorkout)?'block':'none';
  document.getElementById('startBox').style.display=(!state.active&&hasWorkout)?'block':'none';
@@ -1266,19 +1449,35 @@ function renderWorkout(){
    : hasWorkout ? 'No active visit' : 'Set up your workout';
 
  const score=e=>(state.active&&state.active.done[e.id]&&e.id!==recentlyCompleted)?1:0;
- const sorted=[...activeExercises].sort((a,b)=>score(a)-score(b));
- const foam=sorted.find(e=>e.id==='foam');
- const strengthOnly=sorted.filter(e=>e.id!=='foam');
- const bike=cardioCurrent('bike'),cross=cardioCurrent('cross');
+ const sorted=[...allItems].sort((a,b)=>score(a)-score(b));
 
- document.getElementById('warmup').innerHTML=(bikeActive?cardioHTML(bike):'')+(foam?cardHTML(foam):'');
- document.getElementById('strength').innerHTML=strengthOnly.map(cardHTML).join('');
- document.getElementById('finish').innerHTML=crossActive?cardioHTML(cross):'';
+ const sectionHTML=section=>sorted
+   .filter(e=>workoutSection(e)===section)
+   .map(e=>e.kind==='cardio'?cardioHTML(e):cardHTML(e))
+   .join('');
 
- const strengthDone=state.active?activeExercises.filter(e=>state.active.done[e.id]).length:0;
- const cardioDone=state.active?Number(!!(bikeActive&&state.active.done.bike))+Number(!!(crossActive&&state.active.done.cross)):0;
- const doneCount=strengthDone+cardioDone;
- const total=activeExercises.length+Number(bikeActive)+Number(crossActive);
+ const warmupHTML=sectionHTML('warmup');
+ const mainHTML=sectionHTML('main');
+ const finishHTML=sectionHTML('finish');
+
+ document.getElementById('warmup').innerHTML=warmupHTML;
+ document.getElementById('strength').innerHTML=mainHTML;
+ document.getElementById('finish').innerHTML=finishHTML;
+
+ document.getElementById('warmupTitle').style.display=warmupHTML?'flex':'none';
+ document.getElementById('warmup').style.display=warmupHTML?'':'none';
+
+ document.getElementById('mainTitle').style.display=mainHTML?'flex':'none';
+ document.getElementById('strength').style.display=mainHTML?'':'none';
+
+ document.getElementById('finishTitle').style.display=finishHTML?'flex':'none';
+ document.getElementById('finish').style.display=finishHTML?'':'none';
+
+ const doneCount=state.active
+   ? allItems.filter(e=>state.active.done[e.id]).length
+   : 0;
+
+ const total=allItems.length;
 
  document.getElementById('sumDone').textContent=`${doneCount} completed`;
  document.getElementById('sumRemain').textContent=`${total-doneCount} remaining`;
@@ -1290,37 +1489,95 @@ function renderWorkout(){
 }
 let editingCardio=null;
 function openCardioEdit(id){
- if(!state.active){alert('Start a gym visit first.');return}
  const e=cardioCurrent(id);
+ const def=cardioDefinition(id);
+ if(!e||!def)return;
+
  editingCardio=id;
+
  document.getElementById('cardioEditTitle').textContent=`Edit ${e.name}`;
  document.getElementById('cardioDurationInput').value=e.duration;
- document.getElementById('cardioLevelInput').value=e.level;
- document.getElementById('cardioProgramInput').value=e.program;
+
+ const fields=def.fields||[];
+ const field1=fields[0]||{};
+ const field2=fields[1]||{};
+
+ const input1=document.getElementById('cardioLevelInput');
+ const input2=document.getElementById('cardioProgramInput');
+
+ document.getElementById('cardioField1Label').textContent=field1.label||'Setting';
+ document.getElementById('cardioField2Label').textContent=field2.label||'Setting';
+
+ input1.inputMode=field1.inputMode||'text';
+ input2.inputMode=field2.inputMode||'text';
+
+ input1.value=field1.key ? (e[field1.key]??'') : '';
+ input2.value=field2.key ? (e[field2.key]??'') : '';
+
  document.getElementById('cardioEditModal').classList.add('show');
 }
+
 function closeCardioEdit(){
  document.getElementById('cardioEditModal').classList.remove('show');
  editingCardio=null;
 }
+
 function saveCardioEdit(){
- if(!editingCardio||!state.active)return;
+ if(!editingCardio)return;
+
+ const def=cardioDefinition(editingCardio);
+ const target=state.cardio?.[editingCardio];
+ if(!def||!target)return;
+
  const duration=parseInt(document.getElementById('cardioDurationInput').value);
- const level=parseInt(document.getElementById('cardioLevelInput').value);
- const program=document.getElementById('cardioProgramInput').value.trim();
- if(!Number.isFinite(duration)||duration<=0||!Number.isFinite(level)||level<0||!program){
-   alert('Please enter time, level and program.');return;
+ if(!Number.isFinite(duration)||duration<=0){
+   alert('Please enter a valid time.');
+   return;
  }
- const target=editingCardio==='bike'?state.cardio.bike:state.cardio.cross;
- target.duration=duration;target.level=level;target.program=program;
- state.active.snapshot[editingCardio]={duration,level,program,detail:`Level ${level} · ${program}`};
- save();closeCardioEdit();renderAll();
+
+ target.duration=duration;
+
+ const inputs=[
+   document.getElementById('cardioLevelInput'),
+   document.getElementById('cardioProgramInput')
+ ];
+
+ for(let index=0;index<(def.fields||[]).length;index++){
+   const field=def.fields[index];
+   const raw=(inputs[index]?.value??'').trim();
+
+   if(raw===''){
+     target[field.key]='';
+     continue;
+   }
+
+   if(field.numeric){
+     const value=parseFloat(raw);
+     if(!Number.isFinite(value)){
+       alert(`Please enter a valid ${field.label.toLowerCase()}.`);
+       return;
+     }
+     target[field.key]=value;
+   }else{
+     target[field.key]=raw;
+   }
+ }
+
+ if(state.active){
+   state.active.snapshot[editingCardio]=cardioSnapshot(editingCardio,target);
+ }
+
+ save();
+ closeCardioEdit();
+ renderAll();
 }
+
 function openEdit(id){if(!state.active){alert('Start a gym visit first.');return} editing=id; const e=state.exercises.find(x=>x.id===id); document.getElementById('modalTitle').textContent=e.name; document.getElementById('weightInput').value=e.weight??'';document.getElementById('setsInput').value=e.sets??'';document.getElementById('repsInput').value=e.reps??'';document.getElementById('modalBackdrop').classList.add('show');}
 function saveEdit(){const e=state.exercises.find(x=>x.id===editing); if(!e)return; const w=parseFloat(document.getElementById('weightInput').value),s=parseInt(document.getElementById('setsInput').value),r=parseInt(document.getElementById('repsInput').value); if(Number.isNaN(w)||Number.isNaN(s)||Number.isNaN(r)){alert('Please enter weight, sets and reps.');return} e.weight=w;e.sets=s;e.reps=r; state.active.snapshot[e.id]={weight:w,sets:s,reps:r}; save();closeEdit();renderAll();}
 function closeEdit(){document.getElementById('modalBackdrop').classList.remove('show');editing=null}
+
 function categoryForExercise(id){
- if(id==='bike'||id==='cross')return 'Cardio';
+ if(cardioDefinition(id))return 'Cardio';
  const e=state.exercises.find(x=>x.id===id);
  if(!e)return 'Other';
  const lib=exerciseLibrary.find(x=>x.pic===(e.pic||e.icon)||x.name===e.name);
@@ -1351,9 +1608,12 @@ function renderVisits(){
  if(!state.visits.length){el.innerHTML='<div class="empty">No visits logged yet.</div>';return}
  el.innerHTML=state.visits.map(v=>{
    const completed=v.done.map(id=>{
-     const baseName=id==='bike'?cardio.warmup.name:id==='cross'?cardio.finish.name:(state.exercises.find(e=>e.id===id)?.name||id);
-     const cs=(id==='bike'||id==='cross')?v.snapshot?.[id]:null;
-     const name=cs?`${baseName} · ${cs.duration} min · Level ${cs.level??'?'}${cs.program?` · ${cs.program}`:''}`:baseName;
+     const cardioDef=cardioDefinition(id);
+     const baseName=cardioDef?.name||(state.exercises.find(e=>e.id===id)?.name||id);
+     const cs=cardioDef?v.snapshot?.[id]:null;
+     const name=cs
+       ? `${baseName} · ${cardioSnapshotSummary(id,cs)}`
+       : baseName;
      return {id,name,category:categoryForExercise(id)};
    });
    const counts={};
@@ -1447,23 +1707,53 @@ function drawChart(rows){
 }
 let manageMode='active',manageEditing=null,selectedPic='cable',manageFromLibrary=false,pendingRetire=null,retireTimer=null;
 function renderManage(){
- const cardioItems=[
-  {...cardio.warmup,kind:'cardio',retired:!!state.cardio.bikeRetired},
-  {...cardio.finish,kind:'cardio',retired:!!state.cardio.crossRetired}
- ];
+ const cardioItems=activeCardio().map(e=>({...e,retired:false}));
  const all=[...cardioItems,...state.exercises];
  const list=all.filter(e=>manageMode==='retired'?e.retired:!e.retired);
  document.getElementById('activeSeg').classList.toggle('active',manageMode==='active');
  document.getElementById('retiredSeg').classList.toggle('active',manageMode==='retired');
  document.getElementById('manageList').innerHTML=list.length?list.map(e=>{
-   const detail=e.kind==='cardio'?`${e.duration} min · ${e.detail}`:e.kind==='duration'?`${e.duration} min`:`${e.weight} kg · ${e.sets} × ${e.reps}`;
-   const edit=e.kind==='cardio'?'':`<button class="smallbtn" data-medit="${e.id}">Edit</button>`;
-   return `<div class="manage-card"><div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}${e.kind==='cardio'?'<span class="badge">cardio</span>':''}</div><div class="last">${detail}</div></div>
-   <div class="actions">${edit}<button class="smallbtn ${pendingRetire===e.id?'confirming':(e.retired?'':'danger')}" data-retire="${e.id}" ${pendingRetire===e.id?'disabled':''}>${pendingRetire===e.id?(e.retired?'✓ Reactivating':'✓ Retired'):(e.retired?'Reactivate':'Retire')}</button></div></div>`;
+   const detail=e.kind==='cardio'
+     ? `${e.duration} min${e.detail?` · ${e.detail}`:''}`
+     : e.kind==='duration'
+       ? `${e.duration} min`
+       : `${e.weight} kg · ${e.sets} × ${e.reps}`;
+   const edit=e.kind==='cardio'
+     ? `<button class="smallbtn" data-cardio-edit="${e.id}">Edit</button>`
+     : `<button class="smallbtn" data-medit="${e.id}">Edit</button>`;
+   const section=workoutSection(e);
+   const sectionSelect=e.retired?'':`<div class="last" style="margin-top:6px">Section:
+     <select data-workout-section="${e.id}" style="margin-left:4px">
+       <option value="warmup" ${section==='warmup'?'selected':''}>Warm-up</option>
+       <option value="main" ${section==='main'?'selected':''}>Main workout</option>
+       <option value="finish" ${section==='finish'?'selected':''}>Finish</option>
+     </select>
+   </div>`;
+   const removeLabel=e.kind==='cardio'
+     ? (pendingRetire===e.id?'✓ Removed':'Remove')
+     : pendingRetire===e.id
+       ? (e.retired?'✓ Reactivating':'✓ Retired')
+       : (e.retired?'Reactivate':'Retire');
+   return `<div class="manage-card"><div class="icon">${visual(e)}</div><div><div class="ex-name">${e.name}${e.kind==='cardio'?'<span class="badge">cardio</span>':''}</div><div class="last">${detail}</div>${sectionSelect}</div>
+   <div class="actions">${edit}<button class="smallbtn ${pendingRetire===e.id?'confirming':(e.retired?'':'danger')}" data-retire="${e.id}" ${pendingRetire===e.id?'disabled':''}>${removeLabel}</button></div></div>`;
  }).join(''):'<div class="empty">No exercises here.</div>';
  document.querySelectorAll('[data-medit]').forEach(b=>b.onclick=()=>openManage(b.dataset.medit));
+ document.querySelectorAll('[data-cardio-edit]').forEach(b=>b.onclick=()=>openCardioEdit(b.dataset.cardioEdit));
  document.querySelectorAll('[data-retire]').forEach(b=>b.onclick=()=>toggleRetire(b.dataset.retire));
+ document.querySelectorAll('[data-workout-section]').forEach(sel=>sel.onchange=()=>setWorkoutSection(sel.dataset.workoutSection,sel.value));
 }
+function setWorkoutSection(id,section){
+ if(!['warmup','main','finish'].includes(section))return;
+ if(cardioDefinition(id)){
+   if(state.cardio?.[id])state.cardio[id].section=section;
+ }else{
+   const e=state.exercises.find(x=>x.id===id);
+   if(e)e.section=section;
+ }
+ save();
+ renderAll();
+}
+
 function renderPicLibrary(){const pics=[...new Set(exerciseLibrary.map(x=>x.pic))];document.getElementById('pictureLibrary').innerHTML=pics.map(k=>`<button class="picchoice ${selectedPic===k?'selected':''}" data-pic="${k}" type="button">${polishedPics[k]?`<img src="${polishedPics[k]}">`:`<div class="libsvg">${svg(k==='lat'?'pulldown':k==='dbrow'?'row':k)}</div>`}<span>${exerciseLibrary.find(x=>x.pic===k)?.name||pictureNames[k]||k}</span></button>`).join('');document.querySelectorAll('[data-pic]').forEach(b=>b.onclick=()=>{selectedPic=b.dataset.pic;renderPicLibrary()})}
 function openManage(id=null){
  manageEditing=id;manageFromLibrary=false;
@@ -1513,34 +1803,47 @@ function toggleRetire(id){
  pendingRetire=id;renderManage();
  clearTimeout(retireTimer);
  retireTimer=setTimeout(()=>{
-   if(id==='bike'){state.cardio.bikeRetired=!state.cardio.bikeRetired}
-   else if(id==='cross'){state.cardio.crossRetired=!state.cardio.crossRetired}
-   else {const e=state.exercises.find(x=>x.id===id);if(e)e.retired=!e.retired}
+   if(cardioDefinition(id)){
+     delete state.cardio[id];
+   }else{
+     const e=state.exercises.find(x=>x.id===id);
+     if(e)e.retired=!e.retired;
+   }
    pendingRetire=null;save();renderAll();
  },650);
 }
 function libraryStatus(x){
- if(x.pic==='bike')return state.cardio.bikeRetired?'retired':'active';
- if(x.pic==='cross')return state.cardio.crossRetired?'retired':'active';
+ if(cardioDefinition(x.pic))return state.cardio[x.pic]?'active':'absent';
  const matches=state.exercises.filter(e=>(e.pic||e.icon)===x.pic||e.name===x.name);
  if(matches.some(e=>!e.retired))return 'active';
  if(matches.some(e=>e.retired))return 'retired';
  return 'absent';
 }
 function reactivateFromLibrary(x){
- if(x.pic==='bike')state.cardio.bikeRetired=false;
- else if(x.pic==='cross')state.cardio.crossRetired=false;
- else{
+ const def=cardioDefinition(x.pic);
+ if(def){
+   state.cardio[x.pic]={...def.defaults,section:def.section||'main'};
+ }else{
    const e=state.exercises.find(e=>e.retired&&((e.pic||e.icon)===x.pic||e.name===x.name));
    if(e)e.retired=false;
  }
  save();renderAll();
 }
+function addFromLibrary(x){
+ const def=cardioDefinition(x.pic);
+ if(def){
+   state.cardio[x.pic]={...def.defaults,section:def.section||'main'};
+   save();
+   renderAll();
+   return;
+ }
+ openManageFromLibrary(x.pic,x.name);
+}
 function removeFromLibrary(x){
  if(!confirm(`Remove ${x.name} from your workout? Your previous visit history will be kept.`))return;
- if(x.pic==='bike')state.cardio.bikeRetired=true;
- else if(x.pic==='cross')state.cardio.crossRetired=true;
- else{
+ if(cardioDefinition(x.pic)){
+   delete state.cardio[x.pic];
+ }else{
    const e=state.exercises.find(e=>!e.retired&&((e.pic||e.icon)===x.pic||e.name===x.name));
    if(e)e.retired=true;
  }
@@ -1565,7 +1868,10 @@ function renderLibrary(){
      : status==='retired'
        ? `<button class="use" data-reactivate="${i}">Add back to workout</button>`
        : `<button class="use" data-libpic="${x.pic}" data-libname="${x.name}">Add to workout</button>`;
-   return `<div class="libcard"><img src="${x.path}" alt="${x.name}"><div class="lname">${x.name}</div><div class="lcat">${x.category}</div>${action}</div>`;
+   const artwork=x.path
+     ? `<img src="${x.path}" alt="${x.name}">`
+     : `<div class="libsvg" style="display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">CARDIO</div>`;
+   return `<div class="libcard">${artwork}<div class="lname">${x.name}</div><div class="lcat">${x.category}</div>${action}</div>`;
  };
 
  const section=(title,items)=>{
@@ -1579,7 +1885,10 @@ function renderLibrary(){
  grid.innerHTML=section('In my workout',activeRows)+section('Other exercises',otherRows);
 
  document.querySelectorAll('[data-lcat]').forEach(b=>b.onclick=()=>{libCategory=b.dataset.lcat;renderLibrary()});
- document.querySelectorAll('[data-libpic]').forEach(b=>b.onclick=()=>openManageFromLibrary(b.dataset.libpic,b.dataset.libname));
+ document.querySelectorAll('[data-libpic]').forEach(b=>b.onclick=()=>{
+   const x=rows.find(x=>x.pic===b.dataset.libpic&&x.name===b.dataset.libname);
+   if(x)addFromLibrary(x);
+ });
  document.querySelectorAll('[data-reactivate]').forEach(b=>b.onclick=()=>reactivateFromLibrary(rows[Number(b.dataset.reactivate)]));
  document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>removeFromLibrary(rows[Number(b.dataset.remove)]));
 }
@@ -1823,9 +2132,7 @@ async function checkCloudBackup() {
     const row=await fetchCloudStateForRestore();
     const remoteState=row.state;
     const programCount=remoteState.exercises.length;
-    const cardioCount=
-      (remoteState.cardio && remoteState.cardio.bikeRetired===false ? 1 : 0) +
-      (remoteState.cardio && remoteState.cardio.crossRetired===false ? 1 : 0);
+    const cardioCount=cardioCountForState(migrateCardio(JSON.parse(JSON.stringify(remoteState))));
     const totalExerciseCount=programCount+cardioCount;
 
     const info={
@@ -1958,9 +2265,7 @@ async function restoreFromCloud() {
     const remoteState=row.state;
 
     const programCount=remoteState.exercises.length;
-    const cardioCount=
-      (remoteState.cardio && remoteState.cardio.bikeRetired===false ? 1 : 0) +
-      (remoteState.cardio && remoteState.cardio.crossRetired===false ? 1 : 0);
+    const cardioCount=cardioCountForState(migrateCardio(JSON.parse(JSON.stringify(remoteState))));
     const totalCount=programCount+cardioCount;
     const visitCount=remoteState.visits.length;
     const updated=row.updated_at ? new Date(row.updated_at).toLocaleString('en-AU') : 'unknown time';
@@ -1985,7 +2290,7 @@ async function restoreFromCloud() {
     localStorage.setItem(PRE_RESTORE_KEY,JSON.stringify(snapshot));
 
     // Apply validated remote copy.
-    state=JSON.parse(JSON.stringify(remoteState));
+    state=migrateCardio(JSON.parse(JSON.stringify(remoteState)));
     state._updatedAt = row.updated_at || state._updatedAt || new Date().toISOString();
     localStorage.setItem(key,JSON.stringify(state));
     localStorage.setItem(LAST_RESTORE_KEY,new Date().toISOString());
@@ -2028,7 +2333,7 @@ function rollbackLastRestore() {
 
   if(!confirm('Undo the last cloud restore and return to the saved local state?')) return;
 
-  state=JSON.parse(JSON.stringify(snapshot.state));
+  state=migrateCardio(JSON.parse(JSON.stringify(snapshot.state)));
   localStorage.setItem(key,JSON.stringify(state));
   localStorage.removeItem(PRE_RESTORE_KEY);
   localStorage.removeItem(LAST_RESTORE_KEY);
