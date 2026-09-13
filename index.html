@@ -951,7 +951,7 @@ main > header,
       <h2>Gym Tracker</h2>
       <p>Personal gym program, visit and progression tracker.</p>
       <div class="about-row"><span>Version</span><strong>V6.6</strong></div>
-      <div class="about-row"><span>Build</span><strong>Multi-user onboarding</strong></div>
+      <div class="about-row"><span>Build</span><strong>Visit deletion</strong></div>
       <div class="about-row"><span>Data</span><strong>Local-first + Supabase cloud sync</strong></div>
     </div>
   </div>
@@ -1341,6 +1341,17 @@ function visitDurationMinutes(v){
   }catch(_){return ''}
 }
 
+function deleteVisit(startedAt){
+ const v=state.visits.find(x=>x.startedAt===startedAt);
+ if(!v)return;
+ const duration=visitDurationMinutes(v);
+ const label=`${fmtDate(v.startedAt)} · ${fmtTime(v.startedAt)}${duration?` · ${duration}`:''}`;
+ if(!confirm(`Delete this visit?\n\n${label}\n\nThis cannot be undone.`))return;
+ state.visits=state.visits.filter(x=>x.startedAt!==startedAt);
+ save();
+ renderAll();
+}
+
 function renderVisits(){
  const el=document.getElementById('visitsList');
  if(!state.visits.length){el.innerHTML='<div class="empty">No visits logged yet.</div>';return}
@@ -1360,7 +1371,8 @@ function renderVisits(){
      return `<div style="margin-top:5px"><strong>${c}</strong>: ${names}</div>`;
    }).join('');
    return `<div class="visit"><div class="visit-head"><span>${fmtDate(v.startedAt)}</span><small>${fmtTime(v.startedAt)}–${fmtTime(v.endedAt)}${visitDurationMinutes(v)?` · ${visitDurationMinutes(v)}`:''}</small></div>
-   <div class="visit-items"><strong>${summary||'No completed exercises'}</strong>${grouped}</div></div>`;
+   <div class="visit-items"><strong>${summary||'No completed exercises'}</strong>${grouped}</div>
+   <div style="margin-top:10px"><button class="secondary" onclick='deleteVisit(${JSON.stringify(v.startedAt)})'>Delete visit</button></div></div>`;
  }).join('');
 }
 function renderProgress(){
