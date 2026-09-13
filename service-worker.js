@@ -1,4 +1,4 @@
-const CACHE='gym-tracker-v6-9-artwork-test-9';
+const CACHE='gym-tracker-v6-9-artwork-test-10';
 const STATIC=["./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./assets/bike.jpg", "./assets/chest.jpg", "./assets/cross.jpg", "./assets/dbrow.jpg", "./assets/facepull.jpg", "./assets/foam.jpg", "./assets/glutebridge.jpg", "./assets/hinge.jpg", "./assets/hipabd.jpg", "./assets/hipext.jpg", "./assets/kneeext.jpg", "./assets/lat.jpg", "./assets/legcurl.jpg", "./assets/legpress.jpg", "./assets/pallof.jpg", "./assets/seatedrow.jpg", "./assets/shrug.jpg", "./assets/backextension45.jpg", "./assets/machine-hip-thrust-lower-back.jpg", "./assets/treadmill.jpg", "./assets/rower.jpg", "./assets/legpress-new.jpg", "./assets/facepull-new.jpg", "./assets/dbrow-new.jpg", "./assets/chest-new.jpg", "./assets/lat-new.jpg", "./assets/pallof-new.jpg", "./assets/hipabd-new.jpg", "./assets/hipext-new.jpg", "./assets/shrug-new.jpg", "./assets/glutebridge-new.jpg", "./assets/kneeext-new.jpg", "./assets/legcurl-new.jpg", "./assets/hinge-new.jpg", "./assets/seatedrow-new.jpg", "./assets/backextension45-new.jpg"];
 
 self.addEventListener('install', event => {
